@@ -5,9 +5,26 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <div class="container">
-      <h1>Hello Love ❤️</h1>
-      <p>If you see this, we did it.</p>
+    <div class="container" id="auth-container">
+      <h1>Login to Our Love App 💖</h1>
+      <input type="email" id="email" placeholder="Your email" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+      <button onclick="signup()">Sign Up</button>
+      <p id="auth-message"></p>
     </div>
+
+    <!-- MAIN APP CONTENT (hidden until login) -->
+    <div class="container" id="app-container" style="display: none;">
+      <h1>Welcome to Our Love App ❤️</h1>
+      <p>Logged in as: <span id="user-email"></span></p>
+      <p>More features loading soon…</p>
+      <button onclick="logout()">Logout</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>
