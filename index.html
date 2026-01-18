@@ -17,8 +17,31 @@
     <div class="container" id="app-container" style="display: none;">
       <h1>Welcome to Our Love App ❤️</h1>
       <p>Logged in as: <span id="user-email"></span></p>
-      <p>More features loading soon…</p>
       <button onclick="logout()">Logout</button>
+
+      <hr>
+
+      <h2>🌈 Mood & Daily Update</h2>
+      <input type="text" id="mood" placeholder="How are you feeling today?" />
+      <button onclick="saveMood()">Save Mood</button>
+      <p id="mood-message"></p>
+
+      <h2>🐾 Luvie (Pet)</h2>
+      <p id="pet-status"></p>
+      <button onclick="feedPet()">Feed</button>
+      <button onclick="bathePet()">Bath</button>
+      <button onclick="dressPet()">Dress</button>
+
+      <h2>📅 Calendar (Important Dates)</h2>
+      <input type="text" id="event-name" placeholder="Event name" />
+      <input type="date" id="event-date" />
+      <button onclick="addEvent()">Add Event</button>
+      <div id="calendar"></div>
+
+      <h2>💬 Chat</h2>
+      <input type="text" id="message" placeholder="Send a message..." />
+      <button onclick="sendMessage()">Send</button>
+      <div id="chat"></div>
     </div>
 
     <!-- FIREBASE LIBRARIES -->
@@ -30,4 +53,3 @@
     <script src="app.js"></script>
   </body>
 </html>
-
