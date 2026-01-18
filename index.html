@@ -14,7 +14,6 @@
       <p id="auth-message"></p>
     </div>
 
-    <!-- MAIN APP CONTENT (hidden until login) -->
     <div class="container" id="app-container" style="display: none;">
       <h1>Welcome to Our Love App ❤️</h1>
       <p>Logged in as: <span id="user-email"></span></p>
@@ -22,9 +21,13 @@
       <button onclick="logout()">Logout</button>
     </div>
 
+    <!-- FIREBASE LIBRARIES -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <!-- APP JS -->
     <script src="app.js"></script>
   </body>
 </html>
+
