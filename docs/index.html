@@ -15,12 +15,15 @@
     <input id="email" type="email" placeholder="Email" />
     <input id="password" type="password" placeholder="Password" />
     <button onclick="signup()">Sign Up</button>
-    <button onclick="login()">Login</button>
+    <button id="loginButton">Login</button>
+    
+
     <p id="auth-status"></p>
   </div>
  <script>
     // Define the login function
     function login() {
+<button onclick="login()">Login</button>
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
       const authStatus = document.getElementById('auth-status');
@@ -33,7 +36,14 @@
         authStatus.textContent = 'Please enter both email and password.';
       }
     }
+<script>
+  function login() {
+    console.log('Login function called via inline onclick!');
+    // Your login logic here
+  }
+</script>
 
+<button onclick="login()">Login</button>
     function signup() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
