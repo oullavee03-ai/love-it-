@@ -10,6 +10,38 @@ const firebaseConfig = {
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// Signup function
+function signup() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  auth.createUserWithEmailAndPassword(email, password)
+    .then(() => {
+      document.getElementById("auth-status").innerText = "🎉 Account created!";
+    })
+    .catch((error) => {
+      document.getElementById("auth-status").innerText = "❌ " + error.message;
+    });
+}
+
+// Login function
+function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then(() => {
+      document.getElementById("auth-status").innerText = "✅ Logged in!";
+    })
+    .catch((error) => {
+      document.getElementById("auth-status").innerText = "❌ " + error.message;
+    });
+}
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const database = firebase.database();
