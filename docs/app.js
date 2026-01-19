@@ -1,7 +1,6 @@
 // ====== FIREBASE CONFIG ======
 const firebaseConfig = {
-const firebaseConfig = 
-  { apiKey: "AIzaSyDDSDsEFkaq5HnW5Be-h13fUxGkU5RciKs",
+   apiKey: "AIzaSyDDSDsEFkaq5HnW5Be-h13fUxGkU5RciKs",
    authDomain: "our-love-app-20c4f.firebaseapp.com", 
    databaseURL: "https://our-love-app-20c4f-default-rtdb.firebaseio.com",
    projectId: "our-love-app-20c4f", 
