@@ -97,18 +97,46 @@ function loadPet() {
   database.ref("users/" + userId + "/pet").on("value", (snapshot) => {
     const pet = snapshot.val();
 
-    const petImage = document.getElementById("pet-image");
+    function feedPet() {
+  showEffect("🍎")("🍔")("🍕");
 
-    if (!petImage || !pet) return;
+  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
+    const pet = snapshot.val();
 
-    if (pet.hunger < 40) {
-      petImage.src = "images/pet-hungry.png";
-    } else if (pet.cleanliness < 40) {
-      petImage.src = "images/pet-dirty.png";
-    } else {
-      petImage.src = "images/pet-happy.png";
-    }
+    database.ref("users/" + userId + "/pet").update({
+      hunger: Math.min(100, pet.hunger + 20),
+      age: pet.age + 0.1
+    });
   });
+}
+
+function showEffect(emoji) {
+  const effectLayer = document.getElementById("effect-layer");
+
+  const span = document.createElement("span");
+  span.className = "effect";
+  span.innerText = emoji;
+  span.style.left = Math.random() * 150 + "px";
+  span.style.top = "100px";
+
+  effectLayer.appendChild(span);
+
+  setTimeout(() => {
+    span.remove();
+  }, 1500);
+}
+
+const petImage = document.getElementById("pet-image");
+petImage.classList.add("pet-react");
+
+setTimeout(() => {
+  petImage.classList.remove("pet-react");
+}, 400);
+
+
+  setTimeout(() => {
+    span.remove();
+  }, 1500);
 }
 
 
@@ -142,6 +170,10 @@ function feedPet() {
 }
 
 function bathePet() {
+  showEffect("🫧");
+  showEffect("🫧");
+  showEffect("🫧");
+
   database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
     const pet = snapshot.val();
 
@@ -152,8 +184,15 @@ function bathePet() {
   });
 }
 
-    });
-  });
+.pet-react {
+  animation: wiggle 0.4s ease-in-out;
+}
+
+@keyframes wiggle {
+  0% { transform: rotate(0); }
+  25% { transform: rotate(5deg); }
+  50% { transform: rotate(-5deg); }
+  100% { transform: rotate(0); }
 }
 
 function dressPet() {
