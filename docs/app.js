@@ -1,3 +1,4 @@
+// ====== FIREBASE CONFIG ======
 const firebaseConfig = {
   apiKey: "AIzaSyDDSDsEFkaq5HnW5Be-h13fUxGkU5RciKs",
   authDomain: "our-love-app-20c4f.firebaseapp.com",
@@ -11,53 +12,20 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-
-// Signup function
-function signup() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  auth.createUserWithEmailAndPassword(email, password)
-    .then(() => {
-      document.getElementById("auth-status").innerText = "🎉 Account created!";
-    })
-    .catch((error) => {
-      document.getElementById("auth-status").innerText = "❌ " + error.message;
-    });
-}
-
-// Login function
-function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  auth.signInWithEmailAndPassword(email, password)
-    .then(() => {
-      document.getElementById("auth-status").innerText = "✅ Logged in!";
-    })
-    .catch((error) => {
-      document.getElementById("auth-status").innerText = "❌ " + error.message;
-    });
-}
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-const auth = firebase.auth();
 const database = firebase.database();
-let userId;
+let userId = null;
 
-// -------- AUTH --------
+// ====== AUTH ======
 function signup() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
   auth.createUserWithEmailAndPassword(email, password)
     .then(() => {
-      document.getElementById("auth-message").innerText = "Signed up! You can now log in.";
+      document.getElementById("auth-message").innerText = "🎉 Account created! Now login.";
     })
     .catch((error) => {
-      document.getElementById("auth-message").innerText = error.message;
+      document.getElementById("auth-message").innerText = "❌ " + error.message;
     });
 }
 
@@ -75,7 +43,7 @@ function login() {
       loadChat();
     })
     .catch((error) => {
-      document.getElementById("auth-message").innerText = error.message;
+      document.getElementById("auth-message").innerText = "❌ " + error.message;
     });
 }
 
@@ -103,14 +71,14 @@ function showApp(user) {
   document.getElementById("user-email").innerText = user.email;
 }
 
-// -------- MOOD --------
+// ====== MOOD ======
 function saveMood() {
   const mood = document.getElementById("mood").value;
   database.ref("users/" + userId + "/mood").set({
     mood,
     timestamp: Date.now()
   });
-  document.getElementById("mood-message").innerText = "Mood saved!";
+  document.getElementById("mood-message").innerText = "Mood saved! 💛";
 }
 
 function loadMood() {
@@ -122,81 +90,70 @@ function loadMood() {
   });
 }
 
-// -------- PET --------
+// ====== PET ======
+function createPetIfNotExist() {
+  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
+    if (!snapshot.exists()) {
+      database.ref("users/" + userId + "/pet").set({
+        name: "LovePet",
+        hunger: 70,
+        cleanliness: 70,
+        style: 0,
+        age: 0
+      });
+    }
+  });
+}
+
 function loadPet() {
   createPetIfNotExist();
 
   database.ref("users/" + userId + "/pet").on("value", (snapshot) => {
     const pet = snapshot.val();
+    if (!pet) return;
 
-    function feedPet() {
-  showEffect("🍎")("🍔")("🍕");
+    document.getElementById("pet-status").innerText = `
+Pet: ${pet.name}
+Hunger: ${pet.hunger}
+Cleanliness: ${pet.cleanliness}
+Style: ${pet.style}
+Age: ${pet.age.toFixed(1)}
+    `;
 
-  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
-    const pet = snapshot.val();
-
-    database.ref("users/" + userId + "/pet").update({
-      hunger: Math.min(100, pet.hunger + 20),
-      age: pet.age + 0.1
-    });
+    // show image based on style
+    const petImage = document.getElementById("pet-image");
+    petImage.src = `./images/pet${pet.style}.png`;
   });
 }
 
 function showEffect(emoji) {
   const effectLayer = document.getElementById("effect-layer");
-
   const span = document.createElement("span");
   span.className = "effect";
   span.innerText = emoji;
-  span.style.left = Math.random() * 150 + "px";
-  span.style.top = "100px";
+  span.style.left = Math.random() * 200 + "px";
+  span.style.top = "60px";
 
   effectLayer.appendChild(span);
 
   setTimeout(() => {
     span.remove();
-  }, 1500);
+  }, 1200);
 }
 
-const petImage = document.getElementById("pet-image");
-petImage.classList.add("pet-react");
-
-setTimeout(() => {
-  petImage.classList.remove("pet-react");
-}, 400);
-
-
-  setTimeout(() => {
-    span.remove();
-  }, 1500);
-}
-
-
-function loadPet() {
-  createPetIfNotExist();
-  database.ref("users/" + userId + "/pet").on("value", (snapshot) => {
-    const pet = snapshot.val();
-    document.getElementById("pet-status").innerText = `
-      Pet: ${pet.name}
-      Hunger: ${pet.hunger}
-      Cleanliness: ${pet.cleanliness}
-      Style: ${pet.style}
-      Age: ${pet.age}
-    `;
-  });
-}
 function feedPet() {
+  showEffect("🍎");
+  showEffect("🍔");
+  showEffect("🍕");
+  showEffect("🍜");
+  showEffect("🌮");
+  showEffect("🍣");
+   
   database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
     const pet = snapshot.val();
-
     database.ref("users/" + userId + "/pet").update({
       hunger: Math.min(100, pet.hunger + 20),
       age: pet.age + 0.1
-    });
-  });
-}
-
-
     });
   });
 }
@@ -204,27 +161,14 @@ function feedPet() {
 function bathePet() {
   showEffect("🫧");
   showEffect("🫧");
-  showEffect("🫧");
 
   database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
     const pet = snapshot.val();
-
     database.ref("users/" + userId + "/pet").update({
       cleanliness: Math.min(100, pet.cleanliness + 20),
       age: pet.age + 0.1
     });
   });
-}
-
-.pet-react {
-  animation: wiggle 0.4s ease-in-out;
-}
-
-@keyframes wiggle {
-  0% { transform: rotate(0); }
-  25% { transform: rotate(5deg); }
-  50% { transform: rotate(-5deg); }
-  100% { transform: rotate(0); }
 }
 
 function dressPet() {
@@ -237,7 +181,7 @@ function dressPet() {
   });
 }
 
-// -------- CALENDAR --------
+// ====== CALENDAR ======
 function addEvent() {
   const name = document.getElementById("event-name").value;
   const date = document.getElementById("event-date").value;
@@ -260,7 +204,7 @@ function loadCalendar() {
   });
 }
 
-// -------- CHAT --------
+// ====== CHAT ======
 function sendMessage() {
   const msg = document.getElementById("message").value;
   const chatId = database.ref("global/chat").push().key;
@@ -281,6 +225,8 @@ function loadChat() {
     document.getElementById("chat").innerHTML = html;
   });
 }
+
+// ====== PET STAT DECAY ======
 setInterval(() => {
   if (!userId) return;
 
