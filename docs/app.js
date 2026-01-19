@@ -98,7 +98,9 @@ function createPetIfNotExist() {
         hunger: 70,
         cleanliness: 70,
         style: 0,
-        age: 0
+        age: 0,
+        happiness: 70,
+        bathroom: 50
       });
     }
   });
@@ -115,18 +117,21 @@ function loadPet() {
 Pet: ${pet.name}
 Hunger: ${pet.hunger}
 Cleanliness: ${pet.cleanliness}
+Bathroom: ${pet.bathroom}
+Happiness: ${pet.happiness}
 Style: ${pet.style}
 Age: ${pet.age.toFixed(1)}
     `;
 
+    // Pet visual reaction
     const petImage = document.getElementById("pet-image");
-    petImage.src = `data:image/svg+xml;utf8,
-      <svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>
-        <circle cx='100' cy='100' r='90' fill='%23ffb6c1'/>
-        <circle cx='70' cy='80' r='10' fill='black'/>
-        <circle cx='130' cy='80' r='10' fill='black'/>
-        <path d='M70 130 Q100 150 130 130' stroke='black' stroke-width='5' fill='none'/>
-      </svg>`;
+    petImage.style.transform = `scale(${1 + pet.age / 50})`;
+
+    if (pet.happiness < 30 || pet.hunger < 30) {
+      petImage.style.opacity = "0.6";
+    } else {
+      petImage.style.opacity = "1";
+    }
   });
 }
 
@@ -152,8 +157,23 @@ function feedPet() {
   database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
     const pet = snapshot.val();
     database.ref("users/" + userId + "/pet").update({
-      hunger: Math.min(100, pet.hunger + 20),
+      hunger: Math.min(100, pet.hunger + 25),
+      happiness: Math.min(100, pet.happiness + 10),
       age: pet.age + 0.1
+    });
+  });
+}
+
+function bathroomPet() {
+  showEffect("🚽");
+
+  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
+    const pet = snapshot.val();
+    database.ref("users/" + userId + "/pet").update({
+      bathroom: Math.min(100, pet.bathroom + 40),
+      cleanliness: Math.max(0, pet.cleanliness - 5),
+      happiness: Math.min(100, pet.happiness + 5),
+      age: pet.age + 0.05
     });
   });
 }
@@ -165,7 +185,36 @@ function bathePet() {
   database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
     const pet = snapshot.val();
     database.ref("users/" + userId + "/pet").update({
-      cleanliness: Math.min(100, pet.cleanliness + 20),
+      cleanliness: Math.min(100, pet.cleanliness + 30),
+      bathroom: Math.max(0, pet.bathroom - 5),
+      happiness: Math.min(100, pet.happiness + 10),
+      age: pet.age + 0.1
+    });
+  });
+}
+
+function brushTeeth() {
+  showEffect("🪥");
+
+  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
+    const pet = snapshot.val();
+    database.ref("users/" + userId + "/pet").update({
+      cleanliness: Math.min(100, pet.cleanliness + 15),
+      happiness: Math.min(100, pet.happiness + 5),
+      age: pet.age + 0.05
+    });
+  });
+}
+
+function playPet() {
+  showEffect("🎾");
+  showEffect("🎮");
+
+  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
+    const pet = snapshot.val();
+    database.ref("users/" + userId + "/pet").update({
+      happiness: Math.min(100, pet.happiness + 20),
+      hunger: Math.max(0, pet.hunger - 10),
       age: pet.age + 0.1
     });
   });
@@ -176,10 +225,28 @@ function dressPet() {
     const pet = snapshot.val();
     database.ref("users/" + userId + "/pet").update({
       style: pet.style + 1,
-      age: pet.age + 0.1
+      happiness: Math.min(100, pet.happiness + 5),
+      age: pet.age + 0.05
     });
   });
 }
+
+// Pet stat decay
+setInterval(() => {
+  if (!userId) return;
+
+  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
+    const pet = snapshot.val();
+    if (!pet) return;
+
+    database.ref("users/" + userId + "/pet").update({
+      hunger: Math.max(0, pet.hunger - 1),
+      cleanliness: Math.max(0, pet.cleanliness - 1),
+      bathroom: Math.max(0, pet.bathroom - 1),
+      happiness: Math.max(0, pet.happiness - 1)
+    });
+  });
+}, 60000);
 
 // ====== CALENDAR ======
 function addEvent() {
