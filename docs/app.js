@@ -238,6 +238,9 @@ setInterval(() => {
   database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
     const pet = snapshot.val();
     if (!pet) return;
+    const petClothes = document.getElementById("pet-clothes");
+petClothes.src = `./images/clothes/cloth${pet.style}.png`;
+
 
     database.ref("users/" + userId + "/pet").update({
       hunger: Math.max(0, pet.hunger - 1),
