@@ -8,122 +8,93 @@
 </head>
 <body>
 
-  <h1>Our Love App 💖</h1>
+<h1>Our Love App 💖</h1>
 
-  <!-- AUTH -->
-  <div id="auth">
-    <input id="email" type="email" placeholder="Email" />
-    <input id="password" type="password" placeholder="Password" />
-    <button onclick="signup()">Sign Up</button>
-    <button id="loginButton">Login</button>
-    
+<!-- AUTH -->
+<div id="auth">
+  <input id="email" type="email" placeholder="Email" />
+  <input id="password" type="password" placeholder="Password" />
+  <button onclick="signup()">Sign Up</button>
+  <button onclick="login()">Login</button>
+  <p id="auth-status"></p>
+</div>
 
-    <p id="auth-status"></p>
+<!-- APP -->
+<div id="app" style="display:none;">
+
+  <!-- NAV -->
+  <div class="nav">
+    <button onclick="openTab('home')">🏠 Home</button>
+    <button onclick="openTab('pet')">🐾 Pet</button>
+    <button onclick="openTab('calendarTab')">📅 Dates</button>
+    <button onclick="openTab('chatTab')">💬 Chat</button>
+    <button onclick="openTab('videoTab')">📹 Call</button>
   </div>
- <script>
-    // Define the login function
-    function login() {
-<button onclick="login()">Login</button>
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const authStatus = document.getElementById('auth-status');
 
-      if (email && password) {
-        authStatus.textContent = `Attempting to log in with ${email}...`;
-        console.log('Login attempt:', { email, password });
-        //  (oullavee03"gmail.com)
-      } else {
-        authStatus.textContent = 'Please enter both email and password.';
-      }
-    }
-<script>
-  function login() {
-    console.log('Login function called via inline onclick!');
-    // Your login logic here
-  }
-</script>
+  <!-- DECOR -->
+  <img src="./images/decor/butterfly.png" class="butterfly delay1">
+  <img src="./images/decor/butterfly.png" class="butterfly delay2">
+  <img src="./images/decor/plant1.png" class="plant left">
+  <img src="./images/decor/plant2.png" class="plant right">
 
-<button onclick="login()">Login</button>
-    function signup() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const authStatus = document.getElementById('auth-status');
+  <!-- HOME -->
+  <div id="home" class="tab active window">
+    <h2>🌈 Mood & Daily Update</h2>
+    <input id="mood" placeholder="How are you feeling today?" />
+    <button onclick="saveMood()">Save Mood</button>
+    <p id="mood-message"></p>
+  </div>
 
-      if (email && password) {
-        authStatus.textContent = `Attempting to sign up with ${email}...`;
-        console.log('Signup attempt:', { email, password });
-      } else {
-        authStatus.textContent = 'Please enter both email and password for signup.';
-      }
-    }
-  </script>
-  <!-- APP -->
-  <div id="app" style="display:none;">
-    <div class="window">
-      <div class="window-header">
-        <span class="dot pink"></span>
-        <span class="dot purple"></span>
-        <span class="dot peach"></span>
-      </div>
-
-      <div class="window-content">
-
-        <!-- Butterfly -->
-        <img src="./images/decor/butterfly.png" class="butterfly" />
-
-        <!-- Mood -->
-        <h2>🌈 Mood & Daily Update</h2>
-        <input type="text" id="mood" placeholder="How are you feeling today?" />
-        <button onclick="saveMood()">Save Mood</button>
-        <p id="mood-message"></p>
-
-        <!-- Pet -->
-        <h2>🐾 Meet Luvie</h2>
-        <div id="pet-area">
-          <img id="pet-image" src="./images/pet/pet0.png" />
-          <img id="pet-clothes" src="./images/clothes/cloth0.png" />
-          <div id="effect-layer"></div>
-        </div>
-
-        <p id="pet-status"></p>
-
-        <button onclick="feedPet()">Feed</button>
-        <button onclick="bathroomPet()">Bathroom</button>
-        <button onclick="bathePet()">Bath</button>
-        <button onclick="brushTeeth()">Brush Teeth</button>
-        <button onclick="playPet()">Play</button>
-        <button onclick="dressPet()">Dress</button>
-
-        <!-- Calendar -->
-        <h2>📅 Calendar</h2>
-        <input type="text" id="event-name" placeholder="Event name" />
-        <input type="date" id="event-date" />
-        <button onclick="addEvent()">Add Event</button>
-        <div id="calendar"></div>
-
-        <!-- Chat -->
-        <h2>💬 Chat</h2>
-        <input type="text" id="message" placeholder="Send a message..." />
-        <button onclick="sendMessage()">Send</button>
-        <div id="chat"></div>
-
-        <!-- Video Call -->
-        <h2>📹 Video Call</h2>
-        <button onclick="startCall()">Start Call</button>
-        <button onclick="shareScreen()">Share Screen</button>
-        <video id="localVideo" autoplay muted></video>
-        <video id="remoteVideo" autoplay></video>
-
-        <button onclick="logout()">Logout</button>
-      </div>
+  <!-- PET -->
+  <div id="pet" class="tab window">
+    <h2>🐾 Meet Luvie</h2>
+    <div id="pet-area">
+      <img id="pet-image" src="./images/pet/pet0.png">
+      <img id="pet-clothes" src="./images/clothes/cloth0.png">
+      <div id="effect-layer"></div>
     </div>
+    <p id="pet-status"></p>
+    <button onclick="feedPet()">🍎 Feed</button>
+    <button onclick="bathroomPet()">🚽 Bathroom</button>
+    <button onclick="bathePet()">🛁 Bath</button>
+    <button onclick="playPet()">🎾 Play</button>
+    <button onclick="dressPet()">👗 Dress</button>
   </div>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- CALENDAR -->
+  <div id="calendarTab" class="tab window">
+    <h2>📅 Important Dates</h2>
+    <input id="event-name" placeholder="Event name">
+    <input id="event-date" type="date">
+    <button onclick="addEvent()">Add</button>
+    <div id="calendar"></div>
+  </div>
 
-  <script src="app.js"></script>
+  <!-- CHAT -->
+  <div id="chatTab" class="tab window">
+    <h2>💬 Chat</h2>
+    <input id="message" placeholder="Message">
+    <button onclick="sendMessage()">Send</button>
+    <div id="chat"></div>
+  </div>
+
+  <!-- VIDEO -->
+  <div id="videoTab" class="tab window">
+    <h2>📹 Video Call</h2>
+    <button onclick="startCall()">Start Call</button>
+    <button onclick="shareScreen()">Share Screen</button>
+    <video id="localVideo" autoplay muted></video>
+    <video id="remoteVideo" autoplay></video>
+  </div>
+
+  <button onclick="logout()">Logout</button>
+</div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script src="app.js"></script>
 </body>
 </html>
