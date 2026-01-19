@@ -1,12 +1,13 @@
 // ====== FIREBASE CONFIG ======
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT.firebaseio.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "XXXX",
-  appId: "XXXX"
+const firebaseConfig = 
+  { apiKey: "AIzaSyDDSDsEFkaq5HnW5Be-h13fUxGkU5RciKs",
+   authDomain: "our-love-app-20c4f.firebaseapp.com", 
+   databaseURL: "https://our-love-app-20c4f-default-rtdb.firebaseio.com",
+   projectId: "our-love-app-20c4f", 
+   storageBucket: "our-love-app-20c4f.appspot.com", 
+   messagingSenderId: "349289764967", 
+   appId: "1:349289764967:web:d282b207c9fa2798b75cc2"
 };
 
 // Initialize Firebase (ONLY ONCE)
