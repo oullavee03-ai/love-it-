@@ -1,58 +1,41 @@
 :root {
   --bg-gradient: linear-gradient(135deg, #f7c8e0, #d6c9ff, #ffe5b4);
-  --window-bg: rgba(255,255,255,0.7);
-  --text: #5b4b8a;
+  --window-bg: rgba(255,255,255,0.65);
+  --accent-pink: #ff9acb;
+  --text-main: #5b4b8a;
+  --blur: blur(14px);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
   background: var(--bg-gradient);
-  font-family: "Poppins", sans-serif;
+  font-family: Poppins, system-ui;
+  color: var(--text-main);
   text-align: center;
-  color: var(--text);
 }
 
 .window {
+  background: var(--window-bg);
+  backdrop-filter: var(--blur);
+  border-radius: 24px;
+  padding: 16px;
   max-width: 420px;
   margin: 20px auto;
-  padding: 16px;
-  border-radius: 24px;
-  background: var(--window-bg);
-  backdrop-filter: blur(12px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.12);
 }
 
-.window-header {
-  display: flex;
-  gap: 8px;
-}
-
-.dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-.pink { background:#ff9acb; }
-.purple { background:#b6a6ff; }
-.peach { background:#ffcfa3; }
-
-button {
-  padding: 10px 14px;
-  margin: 6px;
-  border-radius: 12px;
-  border: none;
-  background: #ff69b4;
-  color: white;
-  cursor: pointer;
-}
-
-button:hover { background:#ff85c1; }
+.dot { width:12px; height:12px; border-radius:50%; }
+.dot.pink{background:#ff9acb}
+.dot.purple{background:#b6a6ff}
+.dot.peach{background:#ffcfa3}
 
 #pet-area {
-  position: relative;
   width: 220px;
   height: 220px;
-  margin: 10px auto;
+  margin: auto;
+  position: relative;
+  animation: breathe 4s infinite;
 }
 
 #pet-area img {
@@ -60,31 +43,36 @@ button:hover { background:#ff85c1; }
   width: 100%;
 }
 
-#effect-layer {
-  position:absolute;
-  width:100%;
-  height:100%;
-  pointer-events:none;
+@keyframes breathe {
+  50% { transform: scale(1.04); }
 }
 
-.effect {
-  position:absolute;
-  font-size:30px;
-  animation: floatUp 1.5s ease-out forwards;
-}
-
-@keyframes floatUp {
-  from { opacity:1; transform:translateY(0); }
-  to { opacity:0; transform:translateY(-40px); }
+button {
+  background:#ff69b4;
+  color:white;
+  border:none;
+  border-radius:10px;
+  padding:10px 15px;
+  margin:4px;
 }
 
 .plant {
   position: fixed;
   bottom: -10px;
   width: 180px;
-  pointer-events: none;
+  pointer-events:none;
 }
-.left { left:-20px; }
-.right { right:-20px; }
 
+.plant.left{left:-20px}
+.plant.right{right:-20px}
 
+.butterfly {
+  position: fixed;
+  width: 40px;
+  animation: fly 18s linear infinite;
+}
+
+@keyframes fly {
+  0% { transform: translateX(-50px); }
+  100% { transform: translateX(110vw); }
+}
