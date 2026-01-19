@@ -209,6 +209,68 @@ function brushTeeth() {
 function playPet() {
   showEffect("🎾");
   showEffect("🎮");
+// ====== TIC TAC TOE ======
+function startTicTacToe() {
+  const area = document.getElementById("game-area");
+  area.innerHTML = `
+    <div id="tic">
+      <h3>Tic Tac Toe</h3>
+      <div id="board">
+        ${Array(9).fill(0).map((_,i)=>`<div class="cell" onclick="ticMove(${i})" id="c${i}"></div>`).join("")}
+      </div>
+      <button onclick="resetTic()">Reset</button>
+    </div>
+  `;
+  window.tic = { turn: "X", board: Array(9).fill("") };
+}
+
+function ticMove(i) {
+  const b = window.tic.board;
+  if (b[i]) return;
+  b[i] = window.tic.turn;
+  document.getElementById("c"+i).innerText = window.tic.turn;
+  window.tic.turn = window.tic.turn === "X" ? "O" : "X";
+}
+
+function resetTic() {
+  startTicTacToe();
+}
+
+// ====== MEMORY GAME ======
+function startMemory() {
+  const area = document.getElementById("game-area");
+  const cards = ["🍎","🍌","🍇","🍓","🍎","🍌","🍇","🍓"];
+  cards.sort(() => Math.random()-0.5);
+
+  area.innerHTML = `
+    <div id="memory">
+      <h3>Memory Game</h3>
+      <div id="memboard">
+        ${cards.map((c,i)=>`<div class="card" onclick="flipCard(${i})" id="m${i}">?</div>`).join("")}
+      </div>
+      <button onclick="startMemory()">Reset</button>
+    </div>
+  `;
+  window.mem = { cards, flipped: [] };
+}
+
+function flipCard(i) {
+  const mem = window.mem;
+  const card = document.getElementById("m"+i);
+  card.innerText = mem.cards[i];
+  mem.flipped.push(i);
+
+  if (mem.flipped.length === 2) {
+    const [a,b] = mem.flipped;
+    if (mem.cards[a] !== mem.cards[b]) {
+      setTimeout(() => {
+        document.getElementById("m"+a).innerText = "?";
+        document.getElementById("m"+b).innerText = "?";
+      }, 500);
+    }
+    mem.flipped = [];
+  }
+}
 
   database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
     const pet = snapshot.val();
@@ -255,11 +317,11 @@ petClothes.src = `./images/clothes/cloth${pet.style}.png`;
 function addEvent() {
   const name = document.getElementById("event-name").value;
   const date = document.getElementById("event-date").value;
-
-  const eventId = database.ref("users/" + userId + "/events").push().key;
-  database.ref("users/" + userId + "/events/" + eventId).set({
-    name,
-    date
+const today = new Date().toISOString().slice(0,10);
+for (let id in events) {
+  if (events[id].date === today) {
+    alert("🎉 Today is your special day: " + events[id].name);
+  } 
   });
 }
 
@@ -282,6 +344,27 @@ function sendMessage() {
     userId,
     message: msg,
     timestamp: Date.now()
+    function postFeed() {
+  const msg = document.getElementById("feed-message").value;
+  const id = database.ref("global/feed").push().key;
+  database.ref("global/feed/" + id).set({
+    userId,
+    message: msg,
+    timestamp: Date.now()
+  });
+}
+
+function loadFeed() {
+  database.ref("global/feed").on("value", (snapshot) => {
+    const feed = snapshot.val();
+    let html = "";
+    for (let id in feed) {
+      html += `<p>${feed[id].userId}: ${feed[id].message}</p>`;
+    }
+    document.getElementById("feed").innerHTML = html;
+  });
+}
+
   });
 }
 
@@ -293,6 +376,36 @@ function loadChat() {
       html += `<p>${chat[id].userId}: ${chat[id].message}</p>`;
     }
     document.getElementById("chat").innerHTML = html;
+  });
+}
+let localStream;
+let pc;
+
+async function startCall() {
+  const localVideo = document.getElementById("localVideo");
+  localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+  localVideo.srcObject = localStream;
+
+  pc = new RTCPeerConnection();
+
+  localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+  pc.ontrack = (event) => {
+    document.getElementById("remoteVideo").srcObject = event.streams[0];
+  };
+
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+
+  // Save offer to Firebase
+  const offerId = database.ref("calls").push().key;
+  database.ref("calls/" + offerId).set({ offer: offer });
+
+  database.ref("calls/" + offerId + "/answer").on("value", async (snap) => {
+    const answer = snap.val();
+    if (answer && !pc.currentRemoteDescription) {
+      await pc.setRemoteDescription(answer);
+    }
   });
 }
 
