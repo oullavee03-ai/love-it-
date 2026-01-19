@@ -1,27 +1,47 @@
 body {
-  background: linear-gradient(135deg, #ffd6e8, #e0f2ff);
-  font-family: "Segoe UI", sans-serif;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #fff0f6;
+  text-align: center;
 }
 
 .container {
   background: white;
-  padding: 30px;
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px auto;
   width: 90%;
   max-width: 400px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
-h1 {
-  color: #ff5fa2;
+#pet-area {
+  margin: 20px auto;
+  width: 200px;
+  height: 200px;
 }
 
-p {
-  color: #555;
+#pet-image {
+  width: 100%;
+  animation: bounce 2s infinite;
 }
+
+/* PET ANIMATION */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+button {
+  padding: 10px 15px;
+  margin: 5px;
+  border: none;
+  border-radius: 10px;
+  background: #ff69b4;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #ff85c1;
+}
+
