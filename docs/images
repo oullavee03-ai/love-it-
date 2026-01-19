@@ -1,18 +1,3 @@
 /images
-   pet/
-      pet0.png
-      pet1.png
-      pet2.png
-      pet3.png
-   clothes/
-      cloth0.png
-      cloth1.png
-      cloth2.png
-      cloth3.png
-"https://thumbs.dreamstime.com/b/butterfly-icons-isolated-style-casual-mobile-game-set-fantasy-colorful-flowers-d-asset-juicy-colors-differents-shapes-289754002.jpg"./images/pet/pet0.png
-/images/pet/pet1.png
-/images/pet/pet2.png
-/images/pet/pet3.png
-
 const petImage = document.getElementById("pet-image");
 petImage.src = `./images/pet/pet${pet.style}.png`;
