@@ -64,6 +64,11 @@
 <button onclick="brushTeeth()">Brush Teeth</button>
 <button onclick="playPet()">Play</button>
 <button onclick="dressPet()">Dress</button>
+<h2>🎮 Games</h2>
+<button onclick="startTicTacToe()">Play Tic Tac Toe</button>
+<button onclick="startMemory()">Play Memory</button>
+
+<div id="game-area"></div>
 
 
     <h2>📅 Calendar (Important Dates)</h2>
@@ -76,6 +81,15 @@
     <input type="text" id="message" placeholder="Send a message..." />
     <button onclick="sendMessage()">Send</button>
     <div id="chat"></div>
+<h2>💌 Relationship Feed</h2>
+<input type="text" id="feed-message" placeholder="Write something for your partner..." />
+<button onclick="postFeed()">Post</button>
+<div id="feed"></div>
+
+    <h2>📹 Video Call</h2>
+<button onclick="startCall()">Start Call</button>
+<video id="localVideo" autoplay muted></video>
+<video id="remoteVideo" autoplay></video>
 
     <button onclick="logout()">Logout</button>
   </div>
