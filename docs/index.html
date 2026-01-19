@@ -18,7 +18,35 @@
     <button onclick="login()">Login</button>
     <p id="auth-status"></p>
   </div>
+ <script>
+    // Define the login function
+    function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const authStatus = document.getElementById('auth-status');
 
+      if (email && password) {
+        authStatus.textContent = `Attempting to log in with ${email}...`;
+        console.log('Login attempt:', { email, password });
+        //  (oullavee03"gmail.com)
+      } else {
+        authStatus.textContent = 'Please enter both email and password.';
+      }
+    }
+
+    function signup() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const authStatus = document.getElementById('auth-status');
+
+      if (email && password) {
+        authStatus.textContent = `Attempting to sign up with ${email}...`;
+        console.log('Signup attempt:', { email, password });
+      } else {
+        authStatus.textContent = 'Please enter both email and password for signup.';
+      }
+    }
+  </script>
   <!-- APP -->
   <div id="app" style="display:none;">
     <div class="window">
