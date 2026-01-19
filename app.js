@@ -91,19 +91,26 @@ function loadMood() {
 }
 
 // -------- PET --------
-function createPetIfNotExist() {
-  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
-    if (!snapshot.exists()) {
-      database.ref("users/" + userId + "/pet").set({
-        name: "Luvie",
-        hunger: 50,
-        cleanliness: 50,
-        style: 0,
-        age: 1
-      });
+function loadPet() {
+  createPetIfNotExist();
+
+  database.ref("users/" + userId + "/pet").on("value", (snapshot) => {
+    const pet = snapshot.val();
+
+    const petImage = document.getElementById("pet-image");
+
+    if (!petImage || !pet) return;
+
+    if (pet.hunger < 40) {
+      petImage.src = "images/pet-hungry.png";
+    } else if (pet.cleanliness < 40) {
+      petImage.src = "images/pet-dirty.png";
+    } else {
+      petImage.src = "images/pet-happy.png";
     }
   });
 }
+
 
 function loadPet() {
   createPetIfNotExist();
@@ -118,13 +125,18 @@ function loadPet() {
     `;
   });
 }
-
 function feedPet() {
   database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
     const pet = snapshot.val();
+
     database.ref("users/" + userId + "/pet").update({
-      hunger: Math.min(100, pet.hunger + 10),
+      hunger: Math.min(100, pet.hunger + 20),
       age: pet.age + 0.1
+    });
+  });
+}
+
+
     });
   });
 }
@@ -132,9 +144,14 @@ function feedPet() {
 function bathePet() {
   database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
     const pet = snapshot.val();
+
     database.ref("users/" + userId + "/pet").update({
-      cleanliness: Math.min(100, pet.cleanliness + 10),
+      cleanliness: Math.min(100, pet.cleanliness + 20),
       age: pet.age + 0.1
+    });
+  });
+}
+
     });
   });
 }
@@ -193,3 +210,16 @@ function loadChat() {
     document.getElementById("chat").innerHTML = html;
   });
 }
+setInterval(() => {
+  if (!userId) return;
+
+  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
+    const pet = snapshot.val();
+    if (!pet) return;
+
+    database.ref("users/" + userId + "/pet").update({
+      hunger: Math.max(0, pet.hunger - 1),
+      cleanliness: Math.max(0, pet.cleanliness - 1)
+    });
+  });
+}, 60000); // every 1 minute
