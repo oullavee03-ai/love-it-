@@ -10,6 +10,7 @@
 
   <h1>Our Love App 💖</h1>
 
+  <!-- AUTH -->
   <div id="auth">
     <input id="email" type="email" placeholder="Email" />
     <input id="password" type="password" placeholder="Password" />
@@ -20,64 +21,59 @@
     <p id="auth-status"></p>
   </div>
 
-  <!-- 🔥 ONLY ONE Firebase import -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <hr>
 
-  <!-- 🔥 Your JS -->
-  <script src="app.js"></script>
-</body>
-</html>
+  <!-- FULL APP (HIDDEN UNTIL LOGIN) -->
+  <div id="app" style="display:none;">
 
-   <hr>
+    <h2>🌈 Mood & Daily Update</h2>
+    <input type="text" id="mood" placeholder="How are you feeling today?" />
+    <button onclick="saveMood()">Save Mood</button>
+    <p id="mood-message"></p>
 
-      <h2>🌈 Mood & Daily Update</h2>
-      <input type="text" id="mood" placeholder="How are you feeling today?" />
-      <button onclick="saveMood()">Save Mood</button>
-      <p id="mood-message"></p>
+    <h2>🐾 Luvie (Pet)</h2>
+    <h2>🐾 Meet Luvie</h2>
 
-      <h2>🐾 Luvie (Pet)</h2>
-<h2>🐾 Meet Luvie</h2>
-
-<div id="pet-area">
-  <img 
-  id="pet"
-  alt="Our Pet"
-  src="data:image/svg+xml;utf8,
-  <svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>
-    <circle cx='100' cy='100' r='90' fill='%23ffb6c1'/>
-    <circle cx='70' cy='80' r='10' fill='black'/>
-    <circle cx='130' cy='80' r='10' fill='black'/>
-    <path d='M70 130 Q100 150 130 130' stroke='black' stroke-width='5' fill='none'/>
-  </svg>"
-/>
-
-  <div id="effect-layer"></div>
-</div>
-
-      <p id="pet-status"></p>
-      <button onclick="feedPet()">Feed</button>
-      <button onclick="bathePet()">Bath</button>
-      <button onclick="dressPet()">Dress</button>
-
-      <h2>📅 Calendar (Important Dates)</h2>
-      <input type="text" id="event-name" placeholder="Event name" />
-      <input type="date" id="event-date" />
-      <button onclick="addEvent()">Add Event</button>
-      <div id="calendar"></div>
-
-      <h2>💬 Chat</h2>
-      <input type="text" id="message" placeholder="Send a message..." />
-      <button onclick="sendMessage()">Send</button>
-      <div id="chat"></div>
+    <div id="pet-area">
+      <img 
+        id="pet-image"
+        alt="Our Pet"
+        src="data:image/svg+xml;utf8,
+        <svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>
+          <circle cx='100' cy='100' r='90' fill='%23ffb6c1'/>
+          <circle cx='70' cy='80' r='10' fill='black'/>
+          <circle cx='130' cy='80' r='10' fill='black'/>
+          <path d='M70 130 Q100 150 130 130' stroke='black' stroke-width='5' fill='none'/>
+        </svg>"
+      />
+      <div id="effect-layer"></div>
     </div>
 
-    <!-- FIREBASE LIBRARIES -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <p id="pet-status"></p>
+    <button onclick="feedPet()">Feed</button>
+    <button onclick="bathePet()">Bath</button>
+    <button onclick="dressPet()">Dress</button>
 
-    <!-- APP JS -->
-    <script src="app.js"></script>
-  </body>
+    <h2>📅 Calendar (Important Dates)</h2>
+    <input type="text" id="event-name" placeholder="Event name" />
+    <input type="date" id="event-date" />
+    <button onclick="addEvent()">Add Event</button>
+    <div id="calendar"></div>
+
+    <h2>💬 Chat</h2>
+    <input type="text" id="message" placeholder="Send a message..." />
+    <button onclick="sendMessage()">Send</button>
+    <div id="chat"></div>
+
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <!-- FIREBASE LIBRARIES (ONLY ONCE) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <!-- APP JS (ONLY ONCE) -->
+  <script src="app.js"></script>
+</body>
 </html>
