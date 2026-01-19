@@ -1,5 +1,6 @@
-// FIREBASE CONFIG
-const firebaseConfig = {
+document.addEventListener("DOMContentLoaded", () => {
+
+ const firebaseConfig = {
   apiKey: "AIzaSyDDSDsEFkaq5HnW5Be-h13fUxGkU5RciKs",
   authDomain: "our-love-app-20c4f.firebaseapp.com",
   databaseURL: "https://our-love-app-20c4f-default-rtdb.firebaseio.com",
@@ -7,139 +8,92 @@ const firebaseConfig = {
   storageBucket: "our-love-app-20c4f.appspot.com",
   messagingSenderId: "349289764967",
   appId: "1:349289764967:web:d282b207c9fa2798b75cc2"
-};
+  };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.database();
-let userId = null;
+  firebase.initializeApp(firebaseConfig);
 
-// AUTH
-function signup() {
-  auth.createUserWithEmailAndPassword(
-    email.value, password.value
-  ).then(() => authStatus("Account created 💖"))
-   .catch(e => authStatus(e.message));
-}
+  const auth = firebase.auth();
+  const db = firebase.database();
 
-function login() {
-  auth.signInWithEmailAndPassword(
-    email.value, password.value
-  ).then(u => initUser(u.user))
-   .catch(e => authStatus(e.message));
-}
+  const authDiv = document.getElementById("auth");
+  const appDiv  = document.getElementById("app");
 
-function logout() {
-  auth.signOut();
-  authDiv(true);
-}
+  // AUTH
+  window.signup = () => {
+    const email = emailInput();
+    const password = passwordInput();
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(() => setUI(true))
+      .catch(e => status(e.message));
+  };
 
-auth.onAuthStateChanged(u => { if(u) initUser(u); });
+  window.login = () => {
+    const email = emailInput();
+    const password = passwordInput();
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => setUI(true))
+      .catch(e => status(e.message));
+  };
 
-function authStatus(msg){ document.getElementById("auth-status").innerText=msg; }
-function authDiv(show){
-  auth.style.display = show?"block":"none";
-  app.style.display = show?"none":"block";
-}
+  window.logout = () => {
+    auth.signOut();
+    setUI(false);
+  };
 
-function initUser(user){
-  userId = user.uid;
-  authDiv(false);
-  initPet();
-  loadMood();
-  loadCalendar();
-  loadChat();
-  loadFeed();
-}
+  function setUI(loggedIn) {
+    authDiv.style.display = loggedIn ? "none" : "block";
+    appDiv.style.display = loggedIn ? "block" : "none";
+  }
 
-// MOOD
-function saveMood(){
-  db.ref(`users/${userId}/mood`).set({ text:mood.value, time:Date.now() });
-}
-function loadMood(){
-  db.ref(`users/${userId}/mood`).on("value",s=>{
-    if(s.val()) moodMessage.innerText="Last mood: "+s.val().text;
-  });
-}
+  function emailInput() {
+    return document.getElementById("email").value;
+  }
 
-// PET
-function initPet(){
-  db.ref(`users/${userId}/pet`).once("value",s=>{
-    if(!s.exists()){
-      db.ref(`users/${userId}/pet`).set({
-        hunger:70, clean:70, happy:70, style:0, age:0
-      });
-    }
-  });
-  db.ref(`users/${userId}/pet`).on("value",s=>{
-    const p=s.val();
-    petStatus.innerText=`Hunger:${p.hunger} Clean:${p.clean} Happy:${p.happy}`;
-    petClothes.src=`./images/clothes/cloth${p.style}.png`;
-  });
-}
+  function passwordInput() {
+    return document.getElementById("password").value;
+  }
 
-function petUpdate(obj){
-  db.ref(`users/${userId}/pet`).update(obj);
-}
-function effect(e){
-  const s=document.createElement("span");
-  s.className="effect"; s.innerText=e;
-  effectLayer.appendChild(s);
-  setTimeout(()=>s.remove(),1200);
-}
+  function status(msg) {
+    document.getElementById("auth-status").innerText = msg;
+  }
 
-function feedPet(){ effect("🍎"); petUpdate({hunger:90, happy:80}); }
-function bathePet(){ effect("🫧"); petUpdate({clean:100}); }
-function bathroomPet(){ effect("🚽"); }
-function brushTeeth(){ effect("🪥"); }
-function playPet(){ effect("🎮"); }
-function dressPet(){ petUpdate({style:Date.now()%3}); }
+  // 🌈 MOOD
+  window.saveMood = () => {
+    const mood = document.getElementById("mood").value;
+    document.getElementById("mood-message").innerText = "Saved 💖";
+  };
 
-// CALENDAR
-function addEvent(){
-  db.ref(`users/${userId}/events`).push({
-    name:eventName.value, date:eventDate.value
-  });
-}
-function loadCalendar(){
-  db.ref(`users/${userId}/events`).on("value",s=>{
-    calendar.innerHTML="";
-    for(let i in s.val()){
-      calendar.innerHTML+=`<p>${s.val()[i].date} - ${s.val()[i].name}</p>`;
-    }
-  });
-}
+  // 🐾 PET
+  let pet = { style: 0, mood: 50 };
 
-// CHAT
-function sendMessage(){
-  db.ref("chat").push({user:userId,text:message.value});
-}
-function loadChat(){
-  db.ref("chat").on("value",s=>{
-    chat.innerHTML="";
-    for(let i in s.val()){
-      chat.innerHTML+=`<p>${s.val()[i].text}</p>`;
-    }
-  });
-}
+  const petImage = document.getElementById("pet-image");
+  const petClothes = document.getElementById("pet-clothes");
 
-// FEED
-function postFeed(){
-  db.ref("feed").push({user:userId,text:feedMessage.value});
-}
-function loadFeed(){
-  db.ref("feed").on("value",s=>{
-    feed.innerHTML="";
-    for(let i in s.val()){
-      feed.innerHTML+=`<p>${s.val()[i].text}</p>`;
-    }
-  });
-}
+  function updatePet() {
+    petImage.src = `./images/pet/pet${pet.style}.png`;
+    petClothes.src = `./images/clothes/cloth${pet.style}.png`;
+  }
 
-// VIDEO (BASIC LOCAL)
-async function startCall(){
-  const stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
-  localVideo.srcObject=stream;
-}
+  window.feedPet = () => sparkle("🍎");
+  window.bathePet = () => sparkle("🛁");
+  window.brushTeeth = () => sparkle("🪥");
+  window.playPet = () => sparkle("🎾");
+  window.bathroomPet = () => sparkle("🚽");
 
+  window.dressPet = () => {
+    pet.style = (pet.style + 1) % 4;
+    updatePet();
+  };
+
+  function sparkle(icon) {
+    const s = document.createElement("div");
+    s.innerText = icon;
+    s.className = "effect";
+    s.style.left = "50%";
+    s.style.top = "50%";
+    document.getElementById("effect-layer").appendChild(s);
+    setTimeout(() => s.remove(), 1500);
+  }
+
+});
 
