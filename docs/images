@@ -1,0 +1,14 @@
+/images
+   pet/
+      pet0.png
+      pet1.png
+      pet2.png
+      pet3.png
+   clothes/
+      cloth0.png
+      cloth1.png
+      cloth2.png
+      cloth3.png
+
+const petImage = document.getElementById("pet-image");
+petImage.src = `./images/pet/pet${pet.style}.png`;
