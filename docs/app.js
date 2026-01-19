@@ -1,4 +1,4 @@
-// ====== FIREBASE CONFIG ======
+// FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyDDSDsEFkaq5HnW5Be-h13fUxGkU5RciKs",
   authDomain: "our-love-app-20c4f.firebaseapp.com",
@@ -9,418 +9,137 @@ const firebaseConfig = {
   appId: "1:349289764967:web:d282b207c9fa2798b75cc2"
 };
 
-// Initialize Firebase (ONLY ONCE)
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const database = firebase.database();
+const db = firebase.database();
 let userId = null;
 
-// ====== AUTH ======
+// AUTH
 function signup() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  auth.createUserWithEmailAndPassword(email, password)
-    .then(() => {
-      document.getElementById("auth-status").innerText = "🎉 Account created! Now login.";
-    })
-    .catch((error) => {
-      document.getElementById("auth-status").innerText = "❌ " + error.message;
-    });
+  auth.createUserWithEmailAndPassword(
+    email.value, password.value
+  ).then(() => authStatus("Account created 💖"))
+   .catch(e => authStatus(e.message));
 }
 
 function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  auth.signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      userId = userCredential.user.uid;
-      showApp(userCredential.user);
-      loadPet();
-      loadMood();
-      loadCalendar();
-      loadChat();
-    })
-    .catch((error) => {
-      document.getElementById("auth-status").innerText = "❌ " + error.message;
-    });
+  auth.signInWithEmailAndPassword(
+    email.value, password.value
+  ).then(u => initUser(u.user))
+   .catch(e => authStatus(e.message));
 }
 
 function logout() {
-  auth.signOut().then(() => {
-    document.getElementById("auth").style.display = "block";
-    document.getElementById("app").style.display = "none";
+  auth.signOut();
+  authDiv(true);
+}
+
+auth.onAuthStateChanged(u => { if(u) initUser(u); });
+
+function authStatus(msg){ document.getElementById("auth-status").innerText=msg; }
+function authDiv(show){
+  auth.style.display = show?"block":"none";
+  app.style.display = show?"none":"block";
+}
+
+function initUser(user){
+  userId = user.uid;
+  authDiv(false);
+  initPet();
+  loadMood();
+  loadCalendar();
+  loadChat();
+  loadFeed();
+}
+
+// MOOD
+function saveMood(){
+  db.ref(`users/${userId}/mood`).set({ text:mood.value, time:Date.now() });
+}
+function loadMood(){
+  db.ref(`users/${userId}/mood`).on("value",s=>{
+    if(s.val()) moodMessage.innerText="Last mood: "+s.val().text;
   });
 }
 
-auth.onAuthStateChanged((user) => {
-  if (user) {
-    userId = user.uid;
-    showApp(user);
-    loadPet();
-    loadMood();
-    loadCalendar();
-    loadChat();
-  }
-});
-
-function showApp(user) {
-  document.getElementById("auth").style.display = "none";
-  document.getElementById("app").style.display = "block";
-}
-
-// ====== MOOD ======
-function saveMood() {
-  const mood = document.getElementById("mood").value;
-  database.ref("users/" + userId + "/mood").set({
-    mood,
-    timestamp: Date.now()
-  });
-  document.getElementById("mood-message").innerText = "Mood saved! 💛";
-}
-
-function loadMood() {
-  database.ref("users/" + userId + "/mood").on("value", (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      document.getElementById("mood-message").innerText = "Last mood: " + data.mood;
-    }
-  });
-}
-
-// ====== PET ======
-function createPetIfNotExist() {
-  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
-    if (!snapshot.exists()) {
-      database.ref("users/" + userId + "/pet").set({
-        name: "LovePet",
-        hunger: 70,
-        cleanliness: 70,
-        style: 0,
-        age: 0,
-        happiness: 70,
-        bathroom: 50
+// PET
+function initPet(){
+  db.ref(`users/${userId}/pet`).once("value",s=>{
+    if(!s.exists()){
+      db.ref(`users/${userId}/pet`).set({
+        hunger:70, clean:70, happy:70, style:0, age:0
       });
     }
   });
+  db.ref(`users/${userId}/pet`).on("value",s=>{
+    const p=s.val();
+    petStatus.innerText=`Hunger:${p.hunger} Clean:${p.clean} Happy:${p.happy}`;
+    petClothes.src=`./images/clothes/cloth${p.style}.png`;
+  });
 }
 
-function loadPet() {
-  createPetIfNotExist();
+function petUpdate(obj){
+  db.ref(`users/${userId}/pet`).update(obj);
+}
+function effect(e){
+  const s=document.createElement("span");
+  s.className="effect"; s.innerText=e;
+  effectLayer.appendChild(s);
+  setTimeout(()=>s.remove(),1200);
+}
 
-  database.ref("users/" + userId + "/pet").on("value", (snapshot) => {
-    const pet = snapshot.val();
-    if (!pet) return;
+function feedPet(){ effect("🍎"); petUpdate({hunger:90, happy:80}); }
+function bathePet(){ effect("🫧"); petUpdate({clean:100}); }
+function bathroomPet(){ effect("🚽"); }
+function brushTeeth(){ effect("🪥"); }
+function playPet(){ effect("🎮"); }
+function dressPet(){ petUpdate({style:Date.now()%3}); }
 
-    document.getElementById("pet-status").innerText = `
-Pet: ${pet.name}
-Hunger: ${pet.hunger}
-Cleanliness: ${pet.cleanliness}
-Bathroom: ${pet.bathroom}
-Happiness: ${pet.happiness}
-Style: ${pet.style}
-Age: ${pet.age.toFixed(1)}
-    `;
-
-    // Pet visual reaction
-    const petImage = document.getElementById("pet-image");
-    petImage.style.transform = `scale(${1 + pet.age / 50})`;
-
-    if (pet.happiness < 30 || pet.hunger < 30) {
-      petImage.style.opacity = "0.6";
-    } else {
-      petImage.style.opacity = "1";
+// CALENDAR
+function addEvent(){
+  db.ref(`users/${userId}/events`).push({
+    name:eventName.value, date:eventDate.value
+  });
+}
+function loadCalendar(){
+  db.ref(`users/${userId}/events`).on("value",s=>{
+    calendar.innerHTML="";
+    for(let i in s.val()){
+      calendar.innerHTML+=`<p>${s.val()[i].date} - ${s.val()[i].name}</p>`;
     }
   });
 }
 
-function showEffect(emoji) {
-  const effectLayer = document.getElementById("effect-layer");
-  const span = document.createElement("span");
-  span.className = "effect";
-  span.innerText = emoji;
-  span.style.left = Math.random() * 200 + "px";
-  span.style.top = "60px";
-
-  effectLayer.appendChild(span);
-
-  setTimeout(() => {
-    span.remove();
-  }, 1200);
+// CHAT
+function sendMessage(){
+  db.ref("chat").push({user:userId,text:message.value});
 }
-
-function feedPet() {
-  showEffect("🍎");
-  showEffect("🍔");
-
-  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
-    const pet = snapshot.val();
-    database.ref("users/" + userId + "/pet").update({
-      hunger: Math.min(100, pet.hunger + 25),
-      happiness: Math.min(100, pet.happiness + 10),
-      age: pet.age + 0.1
-    });
-  });
-}
-
-function bathroomPet() {
-  showEffect("🚽");
-
-  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
-    const pet = snapshot.val();
-    database.ref("users/" + userId + "/pet").update({
-      bathroom: Math.min(100, pet.bathroom + 40),
-      cleanliness: Math.max(0, pet.cleanliness - 5),
-      happiness: Math.min(100, pet.happiness + 5),
-      age: pet.age + 0.05
-    });
-  });
-}
-
-function bathePet() {
-  showEffect("🫧");
-  showEffect("🫧");
-
-  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
-    const pet = snapshot.val();
-    database.ref("users/" + userId + "/pet").update({
-      cleanliness: Math.min(100, pet.cleanliness + 30),
-      bathroom: Math.max(0, pet.bathroom - 5),
-      happiness: Math.min(100, pet.happiness + 10),
-      age: pet.age + 0.1
-    });
-  });
-}
-
-function brushTeeth() {
-  showEffect("🪥");
-
-  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
-    const pet = snapshot.val();
-    database.ref("users/" + userId + "/pet").update({
-      cleanliness: Math.min(100, pet.cleanliness + 15),
-      happiness: Math.min(100, pet.happiness + 5),
-      age: pet.age + 0.05
-    });
-  });
-}
-
-function playPet() {
-  showEffect("🎾");
-  showEffect("🎮");
-// ====== TIC TAC TOE ======
-function startTicTacToe() {
-  const area = document.getElementById("game-area");
-  area.innerHTML = `
-    <div id="tic">
-      <h3>Tic Tac Toe</h3>
-      <div id="board">
-        ${Array(9).fill(0).map((_,i)=>`<div class="cell" onclick="ticMove(${i})" id="c${i}"></div>`).join("")}
-      </div>
-      <button onclick="resetTic()">Reset</button>
-    </div>
-  `;
-  window.tic = { turn: "X", board: Array(9).fill("") };
-}
-
-function ticMove(i) {
-  const b = window.tic.board;
-  if (b[i]) return;
-  b[i] = window.tic.turn;
-  document.getElementById("c"+i).innerText = window.tic.turn;
-  window.tic.turn = window.tic.turn === "X" ? "O" : "X";
-}
-
-function resetTic() {
-  startTicTacToe();
-}
-
-// ====== MEMORY GAME ======
-function startMemory() {
-  const area = document.getElementById("game-area");
-  const cards = ["🍎","🍌","🍇","🍓","🍎","🍌","🍇","🍓"];
-  cards.sort(() => Math.random()-0.5);
-
-  area.innerHTML = `
-    <div id="memory">
-      <h3>Memory Game</h3>
-      <div id="memboard">
-        ${cards.map((c,i)=>`<div class="card" onclick="flipCard(${i})" id="m${i}">?</div>`).join("")}
-      </div>
-      <button onclick="startMemory()">Reset</button>
-    </div>
-  `;
-  window.mem = { cards, flipped: [] };
-}
-
-function flipCard(i) {
-  const mem = window.mem;
-  const card = document.getElementById("m"+i);
-  card.innerText = mem.cards[i];
-  mem.flipped.push(i);
-
-  if (mem.flipped.length === 2) {
-    const [a,b] = mem.flipped;
-    if (mem.cards[a] !== mem.cards[b]) {
-      setTimeout(() => {
-        document.getElementById("m"+a).innerText = "?";
-        document.getElementById("m"+b).innerText = "?";
-      }, 500);
-    }
-    mem.flipped = [];
-  }
-}
-
-  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
-    const pet = snapshot.val();
-    database.ref("users/" + userId + "/pet").update({
-      happiness: Math.min(100, pet.happiness + 20),
-      hunger: Math.max(0, pet.hunger - 10),
-      age: pet.age + 0.1
-    });
-  });
-}
-
-function dressPet() {
-  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
-    const pet = snapshot.val();
-    database.ref("users/" + userId + "/pet").update({
-      style: pet.style + 1,
-      happiness: Math.min(100, pet.happiness + 5),
-      age: pet.age + 0.05
-    });
-  });
-}
-
-// Pet stat decay
-setInterval(() => {
-  if (!userId) return;
-
-  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
-    const pet = snapshot.val();
-    if (!pet) return;
-    const petClothes = document.getElementById("pet-clothes");
-petClothes.src = `./images/clothes/cloth${pet.style}.png`;
-
-
-    database.ref("users/" + userId + "/pet").update({
-      hunger: Math.max(0, pet.hunger - 1),
-      cleanliness: Math.max(0, pet.cleanliness - 1),
-      bathroom: Math.max(0, pet.bathroom - 1),
-      happiness: Math.max(0, pet.happiness - 1)
-    });
-  });
-}, 60000);
-
-// ====== CALENDAR ======
-function addEvent() {
-  const name = document.getElementById("event-name").value;
-  const date = document.getElementById("event-date").value;
-const today = new Date().toISOString().slice(0,10);
-for (let id in events) {
-  if (events[id].date === today) {
-    alert("🎉 Today is your special day: " + events[id].name);
-  } 
-  });
-}
-
-function loadCalendar() {
-  database.ref("users/" + userId + "/events").on("value", (snapshot) => {
-    const events = snapshot.val();
-    let html = "";
-    for (let id in events) {
-      html += `<p>${events[id].date} - ${events[id].name}</p>`;
-    }
-    document.getElementById("calendar").innerHTML = html;
-  });
-}
-
-// ====== CHAT ======
-function sendMessage() {
-  const msg = document.getElementById("message").value;
-  const chatId = database.ref("global/chat").push().key;
-  database.ref("global/chat/" + chatId).set({
-    userId,
-    message: msg,
-    timestamp: Date.now()
-    function postFeed() {
-  const msg = document.getElementById("feed-message").value;
-  const id = database.ref("global/feed").push().key;
-  database.ref("global/feed/" + id).set({
-    userId,
-    message: msg,
-    timestamp: Date.now()
-  });
-}
-
-function loadFeed() {
-  database.ref("global/feed").on("value", (snapshot) => {
-    const feed = snapshot.val();
-    let html = "";
-    for (let id in feed) {
-      html += `<p>${feed[id].userId}: ${feed[id].message}</p>`;
-    }
-    document.getElementById("feed").innerHTML = html;
-  });
-}
-
-  });
-}
-
-function loadChat() {
-  database.ref("global/chat").on("value", (snapshot) => {
-    const chat = snapshot.val();
-    let html = "";
-    for (let id in chat) {
-      html += `<p>${chat[id].userId}: ${chat[id].message}</p>`;
-    }
-    document.getElementById("chat").innerHTML = html;
-  });
-}
-let localStream;
-let pc;
-
-async function startCall() {
-  const localVideo = document.getElementById("localVideo");
-  localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-  localVideo.srcObject = localStream;
-
-  pc = new RTCPeerConnection();
-
-  localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-
-  pc.ontrack = (event) => {
-    document.getElementById("remoteVideo").srcObject = event.streams[0];
-  };
-
-  const offer = await pc.createOffer();
-  await pc.setLocalDescription(offer);
-
-  // Save offer to Firebase
-  const offerId = database.ref("calls").push().key;
-  database.ref("calls/" + offerId).set({ offer: offer });
-
-  database.ref("calls/" + offerId + "/answer").on("value", async (snap) => {
-    const answer = snap.val();
-    if (answer && !pc.currentRemoteDescription) {
-      await pc.setRemoteDescription(answer);
+function loadChat(){
+  db.ref("chat").on("value",s=>{
+    chat.innerHTML="";
+    for(let i in s.val()){
+      chat.innerHTML+=`<p>${s.val()[i].text}</p>`;
     }
   });
 }
 
-// ====== PET STAT DECAY ======
-setInterval(() => {
-  if (!userId) return;
-
-  database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
-    const pet = snapshot.val();
-    if (!pet) return;
-
-    database.ref("users/" + userId + "/pet").update({
-      hunger: Math.max(0, pet.hunger - 1),
-      cleanliness: Math.max(0, pet.cleanliness - 1)
-    });
+// FEED
+function postFeed(){
+  db.ref("feed").push({user:userId,text:feedMessage.value});
+}
+function loadFeed(){
+  db.ref("feed").on("value",s=>{
+    feed.innerHTML="";
+    for(let i in s.val()){
+      feed.innerHTML+=`<p>${s.val()[i].text}</p>`;
+    }
   });
-}, 60000);
+}
+
+// VIDEO (BASIC LOCAL)
+async function startCall(){
+  const stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+  localVideo.srcObject=stream;
+}
+
 
