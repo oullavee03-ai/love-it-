@@ -77,3 +77,29 @@ button:hover {
   height: 100%;
   pointer-events: none;
 }
+
+.effect {
+  position: absolute;
+  font-size: 30px;
+  animation: floatUp 1.5s ease-out forwards;
+}
+
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-40px); }
+}
+
+.butterfly {
+  position: fixed;
+  width: 40px;
+  top: 30%;
+  left: -50px;
+  animation: fly 18s linear infinite;
+  opacity: 0.8;
+}
+
+@keyframes fly {
+  0%   { transform: translateX(-50px) translateY(0); }
+  50%  { transform: translateX(50vw) translateY(-40px); }
+  100% { transform: translateX(110vw) translateY(20px); }
+}
