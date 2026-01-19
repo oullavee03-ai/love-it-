@@ -1,18 +1,29 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Our Love App</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <div class="container" id="auth-container">
-      <h1>Login to Our Love App 💖</h1>
-      <input type="email" id="email" placeholder="Your email" />
-      <input type="password" id="password" placeholder="Password" />
-      <button onclick="login()">Login</button>
-      <button onclick="signup()">Sign Up</button>
-      <p id="auth-message"></p>
-    </div>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Our Love App 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <h1>Our Love App 💖</h1>
+
+  <div id="auth">
+    <input id="email" type="email" placeholder="Email" />
+    <input id="password" type="password" placeholder="Password" />
+
+    <button onclick="signup()">Sign Up</button>
+    <button onclick="login()">Login</button>
+
+    <p id="auth-status"></p>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <script src="app.js"></script>
 
     <div class="container" id="app-container" style="display: none;">
       <h1>Welcome to Our Love App ❤️</h1>
