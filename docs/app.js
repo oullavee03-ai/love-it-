@@ -9,7 +9,7 @@ const firebaseConfig = {
   appId: "1:349289764967:web:d282b207c9fa2798b75cc2"
 };
 
-// Initialize Firebase
+// Initialize Firebase (ONLY ONCE)
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const database = firebase.database();
@@ -22,10 +22,10 @@ function signup() {
 
   auth.createUserWithEmailAndPassword(email, password)
     .then(() => {
-      document.getElementById("auth-message").innerText = "🎉 Account created! Now login.";
+      document.getElementById("auth-status").innerText = "🎉 Account created! Now login.";
     })
     .catch((error) => {
-      document.getElementById("auth-message").innerText = "❌ " + error.message;
+      document.getElementById("auth-status").innerText = "❌ " + error.message;
     });
 }
 
@@ -43,14 +43,14 @@ function login() {
       loadChat();
     })
     .catch((error) => {
-      document.getElementById("auth-message").innerText = "❌ " + error.message;
+      document.getElementById("auth-status").innerText = "❌ " + error.message;
     });
 }
 
 function logout() {
   auth.signOut().then(() => {
-    document.getElementById("auth-container").style.display = "block";
-    document.getElementById("app-container").style.display = "none";
+    document.getElementById("auth").style.display = "block";
+    document.getElementById("app").style.display = "none";
   });
 }
 
@@ -66,9 +66,8 @@ auth.onAuthStateChanged((user) => {
 });
 
 function showApp(user) {
-  document.getElementById("auth-container").style.display = "none";
-  document.getElementById("app-container").style.display = "block";
-  document.getElementById("user-email").innerText = user.email;
+  document.getElementById("auth").style.display = "none";
+  document.getElementById("app").style.display = "block";
 }
 
 // ====== MOOD ======
@@ -120,9 +119,14 @@ Style: ${pet.style}
 Age: ${pet.age.toFixed(1)}
     `;
 
-    // show image based on style
     const petImage = document.getElementById("pet-image");
-    petImage.src = `./images/pet${pet.style}.png`;
+    petImage.src = `data:image/svg+xml;utf8,
+      <svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>
+        <circle cx='100' cy='100' r='90' fill='%23ffb6c1'/>
+        <circle cx='70' cy='80' r='10' fill='black'/>
+        <circle cx='130' cy='80' r='10' fill='black'/>
+        <path d='M70 130 Q100 150 130 130' stroke='black' stroke-width='5' fill='none'/>
+      </svg>`;
   });
 }
 
@@ -144,11 +148,7 @@ function showEffect(emoji) {
 function feedPet() {
   showEffect("🍎");
   showEffect("🍔");
-  showEffect("🍕");
-  showEffect("🍜");
-  showEffect("🌮");
-  showEffect("🍣");
-   
+
   database.ref("users/" + userId + "/pet").once("value", (snapshot) => {
     const pet = snapshot.val();
     database.ref("users/" + userId + "/pet").update({
@@ -239,4 +239,5 @@ setInterval(() => {
       cleanliness: Math.max(0, pet.cleanliness - 1)
     });
   });
-}, 60000); // every 1 minute
+}, 60000);
+
