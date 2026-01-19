@@ -9,96 +9,73 @@
 
 <body>
 
-<h1>Our Love App 💖</h1>
+  <h1>Our Love App 💖</h1>
 
-<!-- AUTH -->
-<div id="auth">
-  <input id="email" type="email" placeholder="Email" />
-  <input id="password" type="password" placeholder="Password" />
-  <button onclick="signup()">Sign Up</button>
-  <button onclick="login()">Login</button>
-  <p id="auth-status"></p>
-</div>
+  <!-- AUTH -->
+  <div id="auth">
+    <input id="email" type="email" placeholder="Email" />
+    <input id="password" type="password" placeholder="Password" />
 
-<!-- APP -->
-<div id="app" style="display:none;">
+    <button onclick="signup()">Sign Up</button>
+    <button onclick="login()">Login</button>
 
-  <!-- AESTHETIC WINDOW -->
-  <div class="window">
-    <div class="window-header">
-      <span class="dot pink"></span>
-      <span class="dot purple"></span>
-      <span class="dot peach"></span>
+    <p id="auth-status"></p>
+  </div>
+
+  <!-- FULL APP -->
+  <div id="app" style="display:none;">
+
+    <div class="window">
+      <div class="window-header">
+        <span class="dot pink"></span>
+        <span class="dot purple"></span>
+        <span class="dot peach"></span>
+      </div>
     </div>
-    <div class="window-content"></div>
+
+    <h2>🌈 Mood & Daily Update</h2>
+    <input type="text" id="mood" placeholder="How are you feeling today?" />
+    <button onclick="saveMood()">Save Mood</button>
+    <p id="mood-message"></p>
+
+    <h2>🐾 Meet Luvie</h2>
+
+    <div id="pet-area">
+      <img id="pet-image" src="./images/pet/pet0.png" />
+      <img id="pet-clothes" src="./images/clothes/cloth0.png" />
+      <div id="effect-layer"></div>
+    </div>
+
+    <p id="pet-status"></p>
+
+    <button onclick="feedPet()">Feed</button>
+    <button onclick="bathroomPet()">Bathroom</button>
+    <button onclick="bathePet()">Bath</button>
+    <button onclick="brushTeeth()">Brush Teeth</button>
+    <button onclick="playPet()">Play</button>
+    <button onclick="dressPet()">Dress</button>
+
+    <h2>📅 Calendar</h2>
+    <input type="text" id="event-name" placeholder="Event name" />
+    <input type="date" id="event-date" />
+    <button onclick="addEvent()">Add Event</button>
+    <div id="calendar"></div>
+
+    <h2>💬 Chat</h2>
+    <input type="text" id="message" placeholder="Send a message..." />
+    <button onclick="sendMessage()">Send</button>
+    <div id="chat"></div>
+
+    <button onclick="logout()">Logout</button>
   </div>
 
-  <img src="./images/decor/plant1.png" class="plant left">
-  <img src="./images/decor/plant2.png" class="plant right">
+  <!-- FIREBASE (ONLY ONCE) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-  <!-- MOOD -->
-  <h2>🌈 Mood & Daily Update</h2>
-  <input id="mood" placeholder="How are you feeling today?" />
-  <button onclick="saveMood()">Save Mood</button>
-  <p id="mood-message"></p>
+  <!-- APP LOGIC -->
+  <script src="app.js"></script>
 
-  <!-- PET -->
-  <h2>🐾 Meet Luvie</h2>
-  <div id="pet-area">
-    <img id="pet-image" src="./images/pet/pet0.png" alt="Pet">
-    <img id="pet-clothes" src="./images/clothes/cloth0.png" alt="Clothes">
-    <div id="effect-layer"></div>
-  </div>
-
-  <p id="pet-status"></p>
-
-  <button onclick="feedPet()">🍎 Feed</button>
-  <button onclick="bathroomPet()">🚽 Bathroom</button>
-  <button onclick="bathePet()">🫧 Bath</button>
-  <button onclick="brushTeeth()">🪥 Brush Teeth</button>
-  <button onclick="playPet()">🎮 Play</button>
-  <button onclick="dressPet()">👗 Dress</button>
-
-  <!-- GAMES -->
-  <h2>🎮 Games</h2>
-  <button onclick="startTicTacToe()">Tic Tac Toe</button>
-  <button onclick="startMemory()">Memory Game</button>
-  <div id="game-area"></div>
-
-  <!-- CALENDAR -->
-  <h2>📅 Calendar</h2>
-  <input id="event-name" placeholder="Event name">
-  <input id="event-date" type="date">
-  <button onclick="addEvent()">Add Event</button>
-  <div id="calendar"></div>
-
-  <!-- CHAT -->
-  <h2>💬 Chat</h2>
-  <input id="message" placeholder="Message">
-  <button onclick="sendMessage()">Send</button>
-  <div id="chat"></div>
-
-  <!-- FEED -->
-  <h2>💌 Relationship Feed</h2>
-  <input id="feed-message" placeholder="Write something sweet...">
-  <button onclick="postFeed()">Post</button>
-  <div id="feed"></div>
-
-  <!-- VIDEO -->
-  <h2>📹 Video Call</h2>
-  <button onclick="startCall()">Start Call</button>
-  <video id="localVideo" autoplay muted></video>
-  <video id="remoteVideo" autoplay></video>
-
-  <button onclick="logout()">Logout</button>
-</div>
-
-<!-- FIREBASE (ONCE ONLY) -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-<script src="app.js"></script>
 </body>
 </html>
-
