@@ -20,17 +20,16 @@
     <p id="auth-status"></p>
   </div>
 
+  <!-- 🔥 ONLY ONE Firebase import -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
+  <!-- 🔥 Your JS -->
   <script src="app.js"></script>
+</body>
+</html>
 
-    <div class="container" id="app-container" style="display: none;">
-      <h1>Welcome to Our Love App ❤️</h1>
-      <p>Logged in as: <span id="user-email"></span></p>
-      <button onclick="logout()">Logout</button>
-
-      <hr>
+   <hr>
 
       <h2>🌈 Mood & Daily Update</h2>
       <input type="text" id="mood" placeholder="How are you feeling today?" />
