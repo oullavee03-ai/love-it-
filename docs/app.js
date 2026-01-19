@@ -8,290 +8,116 @@ const firebaseConfig = {
    messagingSenderId: "349289764967", 
    appId: "1:349289764967:web:d282b207c9fa2798b75cc2"
 };
-
-// Initialize Firebase (ONLY ONCE)
-firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const database = firebase.database();
-
+const db = firebase.database();
 let userId = null;
+let currentPet = null;
 
-// ====== UI Helpers ======
-function setUI(loggedIn) {
-  document.getElementById("auth").style.display = loggedIn ? "none" : "block";
-  document.getElementById("app").style.display = loggedIn ? "block" : "none";
+// UI
+function setUI(on){
+  authBox.style.display = on?"none":"block";
+  app.style.display = on?"block":"none";
+}
+function openTab(id){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 }
 
-function status(msg) {
-  document.getElementById("auth-status").innerText = msg;
+// AUTH
+function signup(){
+  auth.createUserWithEmailAndPassword(email.value,password.value)
+    .then(()=>status("Account created!"))
+    .catch(e=>status(e.message));
 }
-
-// ====== AUTH ======
-function signup() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  auth.createUserWithEmailAndPassword(email, password)
-    .then(() => status("Account created! Please login."))
-    .catch((e) => status(e.message));
+function login(){
+  auth.signInWithEmailAndPassword(email.value,password.value)
+    .catch(e=>status(e.message));
 }
-
-function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  auth.signInWithEmailAndPassword(email, password)
-    .then((u) => {
-      userId = u.user.uid;
-      setUI(true);
-      loadPet();
-      loadMood();
-      loadCalendar();
-      loadChat();
-    })
-    .catch((e) => status(e.message));
-}
-
-function logout() {
-  auth.signOut();
-  setUI(false);
-}
-
-auth.onAuthStateChanged((user) => {
-  if (user) {
-    userId = user.uid;
-    setUI(true);
-    loadPet();
-    loadMood();
-    loadCalendar();
-    loadChat();
-  } else {
-    setUI(false);
-  }
+function logout(){ auth.signOut(); }
+auth.onAuthStateChanged(u=>{
+  if(!u)return setUI(false);
+  userId=u.uid; setUI(true);
+  loadPet(); loadMood(); loadCalendar(); loadChat();
 });
 
-// ====== MOOD ======
-function saveMood() {
-  const mood = document.getElementById("mood").value;
-  database.ref("users/" + userId + "/mood").set({
-    mood,
-    timestamp: Date.now()
-  });
-  document.getElementById("mood-message").innerText = "Mood saved 💛";
+// MOOD + NOTIFICATION
+function saveMood(){
+  db.ref(`users/${userId}/mood`).set({ mood:mood.value,time:Date.now()});
+  moodMessage.innerText="Mood saved 💖";
+  if(Notification.permission==="granted")
+    new Notification("💌 Mood Updated",{body:"Your partner feels you ✨"});
 }
+Notification.requestPermission();
 
-function loadMood() {
-  database.ref("users/" + userId + "/mood").on("value", (snap) => {
-    const data = snap.val();
-    if (data) {
-      document.getElementById("mood-message").innerText = "Last mood: " + data.mood;
-    }
-  });
-}
-
-// ====== PET ======
-function createPetIfNotExist() {
-  database.ref("users/" + userId + "/pet").once("value", (snap) => {
-    if (!snap.exists()) {
-      database.ref("users/" + userId + "/pet").set({
-        style: 0,
-        hunger: 50,
-        cleanliness: 50,
-        bathroom: 50,
-        happiness: 50,
-        age: 0
-      });
-    }
+// PET
+function loadPet(){
+  const ref=db.ref(`users/${userId}/pet`);
+  ref.once("value",s=>{ if(!s.exists()) ref.set({style:0,hunger:60,happiness:60}); });
+  ref.on("value",s=>{
+    currentPet=s.val();
+    petStatus.innerText=`❤️ ${currentPet.happiness} | 🍎 ${currentPet.hunger}`;
+    petImage.src=`./images/pet/pet${currentPet.style}.png`;
+    petClothes.src=`./images/clothes/cloth${currentPet.style}.png`;
+    animatePet();
   });
 }
+function animatePet(){
+  petArea.className="";
+  if(currentPet.happiness>70) petArea.classList.add("happy");
+  if(currentPet.hunger<30) petArea.classList.add("hungry");
+}
+function updatePet(data){
+  db.ref(`users/${userId}/pet`).update(data);
+}
+function feedPet(){ effect("🍎"); updatePet({hunger:100,happiness:currentPet.happiness+5}); }
+function playPet(){ effect("🎾"); updatePet({happiness:100,hunger:currentPet.hunger-10}); }
+function dressPet(){ updatePet({style:(currentPet.style+1)%4}); }
+function effect(e){
+  const d=document.createElement("div");
+  d.className="effect"; d.innerText=e;
+  effectLayer.appendChild(d);
+  setTimeout(()=>d.remove(),1500);
+}
 
-function loadPet() {
-  createPetIfNotExist();
-
-  database.ref("users/" + userId + "/pet").on("value", (snap) => {
-    const pet = snap.val();
-    if (!pet) return;
-
-    document.getElementById("pet-status").innerText =
-      `Hunger: ${pet.hunger} | Cleanliness: ${pet.cleanliness} | Bathroom: ${pet.bathroom} | Happiness: ${pet.happiness} | Age: ${pet.age}`;
-
-    document.getElementById("pet-image").src = `./images/pet/pet${pet.style}.png`;
-    document.getElementById("pet-clothes").src = `./images/clothes/cloth${pet.style}.png`;
+// CALENDAR
+function addEvent(){
+  db.ref(`users/${userId}/events`).push({
+    name:eventName.value,
+    date:eventDate.value
   });
 }
-
-function showEffect(emoji) {
-  const layer = document.getElementById("effect-layer");
-  const e = document.createElement("div");
-  e.className = "effect";
-  e.innerText = emoji;
-  e.style.left = "50%";
-  e.style.top = "50%";
-  layer.appendChild(e);
-  setTimeout(() => e.remove(), 1500);
-}
-
-function feedPet() {
-  showEffect("🍎");
-  database.ref("users/" + userId + "/pet").once("value", (snap) => {
-    const pet = snap.val();
-    database.ref("users/" + userId + "/pet").update({
-      hunger: Math.min(100, pet.hunger + 25),
-      happiness: Math.min(100, pet.happiness + 10),
-      age: pet.age + 0.1
+function loadCalendar(){
+  db.ref(`users/${userId}/events`).on("value",s=>{
+    calendar.innerHTML="";
+    Object.values(s.val()||{}).forEach(e=>{
+      calendar.innerHTML+=`<div class="event-card">${e.date} – ${e.name}</div>`;
     });
   });
 }
 
-function bathroomPet() {
-  showEffect("🚽");
-  database.ref("users/" + userId + "/pet").once("value", (snap) => {
-    const pet = snap.val();
-    database.ref("users/" + userId + "/pet").update({
-      bathroom: Math.min(100, pet.bathroom + 40),
-      cleanliness: Math.max(0, pet.cleanliness - 5),
-      happiness: Math.min(100, pet.happiness + 5),
-      age: pet.age + 0.05
+// CHAT
+function sendMessage(){
+  db.ref("chat").push({u:userId,m:message.value});
+  message.value="";
+}
+function loadChat(){
+  db.ref("chat").on("value",s=>{
+    chat.innerHTML="";
+    Object.values(s.val()||{}).forEach(c=>{
+      chat.innerHTML+=`<p>${c.m}</p>`;
     });
   });
 }
 
-function bathePet() {
-  showEffect("🛁");
-  database.ref("users/" + userId + "/pet").once("value", (snap) => {
-    const pet = snap.val();
-    database.ref("users/" + userId + "/pet").update({
-      cleanliness: Math.min(100, pet.cleanliness + 30),
-      bathroom: Math.max(0, pet.bathroom - 5),
-      happiness: Math.min(100, pet.happiness + 10),
-      age: pet.age + 0.1
-    });
-  });
+// VIDEO (basic)
+let stream, pc;
+async function startCall(){
+  stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+  localVideo.srcObject=stream;
+  pc=new RTCPeerConnection();
+  stream.getTracks().forEach(t=>pc.addTrack(t,stream));
 }
-
-function brushTeeth() {
-  showEffect("🪥");
-  database.ref("users/" + userId + "/pet").once("value", (snap) => {
-    const pet = snap.val();
-    database.ref("users/" + userId + "/pet").update({
-      cleanliness: Math.min(100, pet.cleanliness + 15),
-      happiness: Math.min(100, pet.happiness + 5),
-      age: pet.age + 0.05
-    });
-  });
-}
-
-function playPet() {
-  showEffect("🎾");
-  database.ref("users/" + userId + "/pet").once("value", (snap) => {
-    const pet = snap.val();
-    database.ref("users/" + userId + "/pet").update({
-      happiness: Math.min(100, pet.happiness + 20),
-      hunger: Math.max(0, pet.hunger - 10),
-      age: pet.age + 0.1
-    });
-  });
-}
-
-function dressPet() {
-  database.ref("users/" + userId + "/pet").once("value", (snap) => {
-    const pet = snap.val();
-    database.ref("users/" + userId + "/pet").update({
-      style: (pet.style + 1) % 4,
-      happiness: Math.min(100, pet.happiness + 5),
-      age: pet.age + 0.05
-    });
-  });
-}
-
-// Pet stat decay
-setInterval(() => {
-  if (!userId) return;
-  database.ref("users/" + userId + "/pet").once("value", (snap) => {
-    const pet = snap.val();
-    if (!pet) return;
-    database.ref("users/" + userId + "/pet").update({
-      hunger: Math.max(0, pet.hunger - 1),
-      cleanliness: Math.max(0, pet.cleanliness - 1),
-      bathroom: Math.max(0, pet.bathroom - 1),
-      happiness: Math.max(0, pet.happiness - 1)
-    });
-  });
-}, 60000);
-
-// ====== CALENDAR ======
-function addEvent() {
-  const name = document.getElementById("event-name").value;
-  const date = document.getElementById("event-date").value;
-  const id = database.ref("users/" + userId + "/events").push().key;
-
-  database.ref("users/" + userId + "/events/" + id).set({ name, date });
-}
-
-function loadCalendar() {
-  database.ref("users/" + userId + "/events").on("value", (snap) => {
-    const events = snap.val() || {};
-    let html = "";
-    for (let id in events) {
-      html += `<p>${events[id].date} - ${events[id].name}</p>`;
-    }
-    document.getElementById("calendar").innerHTML = html;
-  });
-}
-
-// ====== CHAT ======
-function sendMessage() {
-  const msg = document.getElementById("message").value;
-  const id = database.ref("global/chat").push().key;
-  database.ref("global/chat/" + id).set({
-    userId,
-    message: msg,
-    timestamp: Date.now()
-  });
-}
-
-function loadChat() {
-  database.ref("global/chat").on("value", (snap) => {
-    const chat = snap.val() || {};
-    let html = "";
-    for (let id in chat) {
-      html += `<p>${chat[id].userId}: ${chat[id].message}</p>`;
-    }
-    document.getElementById("chat").innerHTML = html;
-  });
-}
-
-// ====== VIDEO CALL (WEBRTC) ======
-let localStream;
-let pc;
-
-async function startCall() {
-  const localVideo = document.getElementById("localVideo");
-  localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-  localVideo.srcObject = localStream;
-
-  pc = new RTCPeerConnection();
-  localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-
-  pc.ontrack = (event) => {
-    document.getElementById("remoteVideo").srcObject = event.streams[0];
-  };
-
-  const offer = await pc.createOffer();
-  await pc.setLocalDescription(offer);
-
-  const callId = database.ref("calls").push().key;
-  database.ref("calls/" + callId).set({ offer: offer.toJSON() });
-
-  database.ref("calls/" + callId + "/answer").on("value", async (snap) => {
-    const answer = snap.val();
-    if (answer && !pc.currentRemoteDescription) {
-      await pc.setRemoteDescription(new RTCSessionDescription(answer));
-    }
-  });
-}
-
-async function shareScreen() {
-  const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-  screenStream.getTracks().forEach(track => pc.addTrack(track, screenStream));
+async function shareScreen(){
+  const s=await navigator.mediaDevices.getDisplayMedia({video:true});
+  s.getTracks().forEach(t=>pc.addTrack(t,s));
 }
