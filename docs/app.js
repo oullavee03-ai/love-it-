@@ -18,6 +18,12 @@ function openTab(id){
   document.querySelectorAll(".tab").forEach(t=>t.classList.add("hidden"));
   document.getElementById(id).classList.remove("hidden");
 }
+
+/* 🌙 Theme */
+function toggleTheme() {
+  document.body.classList.toggle("light");
+}
+
 // Real photographic images from Unsplash (royalty-free)
 
 // Butterflies
@@ -123,6 +129,7 @@ function loadPet(){
     petImage.src=`images/pet/pet${pet.style}.png`;
     petClothes.src=`images/clothes/cloth${pet.style}.png`;
     petStatus.innerText=`❤️ Happiness: ${pet.happy}`;
+     alert("Your pet feels loved 💕"); 
   });
 }
 function updatePet(d){ db.ref(`users/${uid}/pet`).update(d); }
@@ -148,12 +155,17 @@ function loadGarden(){
     "https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf"
   ];
 
-  butterflies.forEach(src=>{
-    const img=document.createElement("img");
-    img.src=src;
-    document.getElementById("butterflies").appendChild(img);
-  });
-
+/* 🦋 Butterflies */
+function spawnButterfly() {
+  const b = document.createElement("img");
+  b.src = "https://upload.wikimedia.org/wikipedia/commons/7/7c/Butterfly_animated.gif";
+  b.className = "floating-butterfly";
+  b.style.top = Math.random()*70+"vh";
+  document.body.appendChild(b);
+  setTimeout(()=>b.remove(),20000);
+}
+setInterval(spawnButterfly, 7000);
+  
   plants.forEach(src=>{
     const img=document.createElement("img");
     img.src=src;
@@ -180,6 +192,13 @@ function loadChat(){
       chatBox.innerHTML+=`<p>${m}</p>`;
     });
   });
+}
+
+function loadMovie() {
+  const url = document.getElementById("movieUrl").value;
+  const movie = document.getElementById("sharedMovie");
+  movie.src = url;
+  movie.play();
 }
 
 // VIDEO
