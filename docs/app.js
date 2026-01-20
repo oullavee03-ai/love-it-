@@ -24,19 +24,6 @@ function toggleTheme() {
   document.body.classList.toggle("light");
 }
 
-// Real photographic images from Unsplash (royalty-free)
-
-// Butterflies
-const butterflies = [
-  {
-    src: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6",
-    caption: "Butterfly on wild flower"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13",
-    caption: "Blue butterfly resting"
-  }
-];
 
 // Garden scenes
 const gardens = [
@@ -48,22 +35,6 @@ const gardens = [
     src: "https://images.unsplash.com/photo-1468327768560-75b778cbb551",
     caption: "Blooming flower garden"
   }
-];
-
-// Plants
-const plants = [
-  {
-    src: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6",
-    caption: "Green leaves close-up"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1446071103084-c257b5f70672",
-    caption: "Indoor house plant"
-  }
-];
-document.addEventListener("DOMContentLoaded", () => {
-  renderImages();
-});
 
 function renderImages() {
   const container = document.getElementById("imageContainer");
