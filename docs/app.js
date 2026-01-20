@@ -30,7 +30,8 @@ function login(){
     .catch(e=>authStatus.innerText=e.message);
 }
 function logout(){ auth.signOut(); }
-
+  
+    let authBox = document.getElementById; 
 auth.onAuthStateChanged(u=>{
   if(!u) return;
   uid=u.uid;
