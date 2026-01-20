@@ -61,25 +61,27 @@ const plants = [
     caption: "Indoor house plant"
   }
 ];
+document.addEventListener("DOMContentLoaded", () => {
+  renderImages();
+});
 
-// Utility function to render images
-function renderImages(containerId, images) {
-  const container = document.getElementById(containerId);
+function renderImages() {
+  const container = document.getElementById("imageContainer");
+  if (!container) return;
 
-  images.forEach(item => {
-    const card = document.createElement("div");
-    card.className = "image-card";
+  const images = [
+    "https://images.unsplash.com/photo-1501004318641-b39e6451bec6",
+    "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
+    "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
+  ];
 
+  images.forEach(src => {
     const img = document.createElement("img");
-    img.src = item.src;
-    img.alt = item.caption;
-
-    const caption = document.createElement("p");
-    caption.textContent = item.caption;
-
-    card.appendChild(img);
-    card.appendChild(caption);
-    container.appendChild(card);
+    img.src = src;
+    img.style.width = "90%";
+    img.style.borderRadius = "16px";
+    img.style.margin = "10px 0";
+    container.appendChild(img);
   });
 }
 
