@@ -26,65 +26,56 @@
   <div class="nav">
     <button onclick="openTab('home')">🏠 Home</button>
     <button onclick="openTab('pet')">🐾 Pet</button>
-    <button onclick="openTab('calendarTab')">📅 Dates</button>
+    <button onclick="openTab('dates')">📅 Dates</button>
     <button onclick="openTab('chatTab')">💬 Chat</button>
-    <button onclick="openTab('videoTab')">📹 Call</button>
+    <button onclick="openTab('call')">📹 Call</button>
   </div>
 
-  <!-- DECOR -->
-  <img src="./images/decor/butterfly.png" class="butterfly delay1">
-  <img src="./images/decor/butterfly.png" class="butterfly delay2">
-  <img src="./images/decor/plant1.png" class="plant left">
-  <img src="./images/decor/plant2.png" class="plant right">
-
   <!-- HOME -->
-  <div id="home" class="tab active window">
-    <h2>🌈 Mood & Daily Update</h2>
-    <input id="mood" placeholder="How are you feeling today?" />
+  <div id="home" class="page">
+    <h2>🌈 Mood Tracker</h2>
+    <input id="mood" placeholder="How are you feeling?" />
     <button onclick="saveMood()">Save Mood</button>
     <p id="mood-message"></p>
   </div>
 
   <!-- PET -->
-  <div id="pet" class="tab window">
-    <h2>🐾 Meet Luvie</h2>
+  <div id="pet" class="page" style="display:none;">
+    <h2>🐾 Luvie</h2>
     <div id="pet-area">
-      <img id="pet-image" src="./images/pet/pet0.png">
-      <img id="pet-clothes" src="./images/clothes/cloth0.png">
+      <img id="pet-image" src="./images/pet/pet0.png" />
+      <img id="pet-clothes" src="./images/clothes/cloth0.png" />
       <div id="effect-layer"></div>
     </div>
     <p id="pet-status"></p>
     <button onclick="feedPet()">🍎 Feed</button>
-    <button onclick="bathroomPet()">🚽 Bathroom</button>
-    <button onclick="bathePet()">🛁 Bath</button>
     <button onclick="playPet()">🎾 Play</button>
     <button onclick="dressPet()">👗 Dress</button>
   </div>
 
-  <!-- CALENDAR -->
-  <div id="calendarTab" class="tab window">
-    <h2>📅 Important Dates</h2>
-    <input id="event-name" placeholder="Event name">
-    <input id="event-date" type="date">
+  <!-- DATES -->
+  <div id="dates" class="page" style="display:none;">
+    <h2>📅 Our Dates</h2>
+    <input id="event-name" placeholder="Event name" />
+    <input id="event-date" type="date" />
     <button onclick="addEvent()">Add</button>
     <div id="calendar"></div>
   </div>
 
   <!-- CHAT -->
-  <div id="chatTab" class="tab window">
+  <div id="chatTab" class="page" style="display:none;">
     <h2>💬 Chat</h2>
-    <input id="message" placeholder="Message">
+    <input id="message" placeholder="Message..." />
     <button onclick="sendMessage()">Send</button>
     <div id="chat"></div>
   </div>
 
-  <!-- VIDEO -->
-  <div id="videoTab" class="tab window">
+  <!-- CALL -->
+  <div id="call" class="page" style="display:none;">
     <h2>📹 Video Call</h2>
-    <button onclick="startCall()">Start Call</button>
+    <button onclick="startCall()">Start Camera</button>
     <button onclick="shareScreen()">Share Screen</button>
     <video id="localVideo" autoplay muted></video>
-    <video id="remoteVideo" autoplay></video>
   </div>
 
   <button onclick="logout()">Logout</button>
@@ -98,3 +89,4 @@
 <script src="app.js"></script>
 </body>
 </html>
+
