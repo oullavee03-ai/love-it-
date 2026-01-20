@@ -1,5 +1,6 @@
-alert("APP.JS IS LOADED");
-console.log("🔥 app.js loaded successfully");
+alert("APP.JS LOADED");
+
+// FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyDDSDsEFkaq5HnW5Be-h13fUxGkU5RciKs",
   authDomain: "our-love-app-20c4f.firebaseapp.com",
@@ -8,103 +9,124 @@ const firebaseConfig = {
   storageBucket: "our-love-app-20c4f.appspot.com",
   messagingSenderId: "349289764967",
   appId: "1:349289764967:web:d282b207c9fa2798b75cc2"
-});
+};
+
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
+// DOM
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+const authBox = document.getElementById("auth");
+const app = document.getElementById("app");
+const moodInput = document.getElementById("mood");
+const moodMessage = document.getElementById("mood-message");
+const petImage = document.getElementById("pet-image");
+const petClothes = document.getElementById("pet-clothes");
+const petStatus = document.getElementById("pet-status");
+const effectLayer = document.getElementById("effect-layer");
+const chatBox = document.getElementById("chat-box");
+const messageInput = document.getElementById("message");
+const localVideo = document.getElementById("localVideo");
+
 let userId = null;
-let petData = null;
+let pet = { style: 0, happy: 50 };
 
-
-// Tabs
-function openTab(id){
-  document.querySelectorAll(".tab").forEach(t=>t.classList.add("hidden"));
+// TABS
+function openTab(id) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.add("hidden"));
   document.getElementById(id).classList.remove("hidden");
 }
 
-// Auth
-function signup(){
-  auth.createUserWithEmailAndPassword(email.value,password.value);
+// AUTH
+function signup() {
+  auth.createUserWithEmailAndPassword(email.value, password.value);
 }
-function login(){
-  auth.signInWithEmailAndPassword(email.value,password.value);
+function login() {
+  auth.signInWithEmailAndPassword(email.value, password.value);
 }
-function logout(){ auth.signOut(); }
+function logout() {
+  auth.signOut();
+}
 
-auth.onAuthStateChanged(u=>{
-  if(!u) return;
-  uid=u.uid;
-  auth.style.display="none";
-  app.style.display="block";
-  loadPet(); loadMood(); loadChat(); loadGame();
+auth.onAuthStateChanged(user => {
+  if (!user) return;
+  userId = user.uid;
+  authBox.style.display = "none";
+  app.style.display = "block";
+  loadPet();
+  loadMood();
+  loadChat();
 });
 
-// Mood
-function saveMood(){
-  db.ref(`users/${uid}/mood`).set(moodInput.value);
+// MOOD
+function saveMood() {
+  db.ref(`users/${userId}/mood`).set(moodInput.value);
 }
-function loadMood(){
-  db.ref(`users/${uid}/mood`).on("value",s=>{
-    moodDisplay.innerText = "Mood: " + (s.val()||"—");
+function loadMood() {
+  db.ref(`users/${userId}/mood`).on("value", s => {
+    moodMessage.innerText = "Mood: " + (s.val() || "");
   });
 }
 
-// Pet
-function loadPet(){
-  const ref=db.ref(`users/${uid}/pet`);
-  ref.once("value",s=>{
-    if(!s.exists()) ref.set({style:0,happy:50});
+// PET
+function loadPet() {
+  const ref = db.ref(`users/${userId}/pet`);
+  ref.once("value", s => {
+    if (!s.exists()) ref.set(pet);
   });
-  ref.on("value",s=>{
-    pet=s.val();
-    petImage.src=`assets/pet/pet${pet.style}.png`;
-    petClothes.src=`assets/clothes/cloth${pet.style}.png`;
-    petStats.innerText=`❤️ ${pet.happy}`;
+  ref.on("value", s => {
+    pet = s.val();
+    petImage.src = `./images/pet/pet${pet.style}.png`;
+    petClothes.src = `./images/clothes/cloth${pet.style}.png`;
+    petStatus.innerText = "❤️ " + pet.happy;
   });
 }
-function feedPet(){ updatePet({happy: pet.happy+5}); effect("🍎"); }
-function playPet(){ updatePet({happy: pet.happy+10}); effect("🎾"); }
-function dressPet(){ updatePet({style:(pet.style+1)%4}); }
-function updatePet(d){ db.ref(`users/${uid}/pet`).update(d); }
-function effect(e){
-  const el=document.createElement("div");
-  el.className="effect"; el.innerText=e;
-  effects.appendChild(el);
-  setTimeout(()=>el.remove(),1500);
+function updatePet(d) {
+  db.ref(`users/${userId}/pet`).update(d);
+}
+function feedPet() {
+  updatePet({ happy: pet.happy + 5 });
+  effect("🍎");
+}
+function playPet() {
+  updatePet({ happy: pet.happy + 10 });
+  effect("🎾");
+}
+function dressPet() {
+  updatePet({ style: (pet.style + 1) % 4 });
+}
+function effect(e) {
+  const d = document.createElement("div");
+  d.className = "effect";
+  d.innerText = e;
+  effectLayer.appendChild(d);
+  setTimeout(() => d.remove(), 1500);
 }
 
-// Multiplayer Game
-function tapPet(){
-  db.ref("game/taps").transaction(v=>(v||0)+1);
+// CHAT
+function sendMessage() {
+  db.ref("chat").push(messageInput.value);
+  messageInput.value = "";
 }
-function loadGame(){
-  db.ref("game/taps").on("value",s=>{
-    tapScore.innerText="Total taps: "+(s.val()||0);
-  });
-}
-
-// Chat
-function sendMessage(){
-  db.ref("chat").push(chatInput.value);
-  chatInput.value="";
-}
-function loadChat(){
-  db.ref("chat").on("value",s=>{
-    chatBox.innerHTML="";
-    Object.values(s.val()||{}).forEach(m=>{
-      chatBox.innerHTML+=`<p>${m}</p>`;
+function loadChat() {
+  db.ref("chat").on("value", s => {
+    chatBox.innerHTML = "";
+    Object.values(s.val() || {}).forEach(m => {
+      chatBox.innerHTML += `<p>${m}</p>`;
     });
   });
 }
 
-// Video Call (basic local)
+// VIDEO
 let stream;
-async function startCall(){
-  stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
-  localVideo.srcObject=stream;
+async function startCall() {
+  stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+  localVideo.srcObject = stream;
 }
-async function shareScreen(){
-  const s=await navigator.mediaDevices.getDisplayMedia({video:true});
-  s.getTracks().forEach(t=>stream.addTrack(t));
+async function shareScreen() {
+  const s = await navigator.mediaDevices.getDisplayMedia({ video: true });
+  s.getTracks().forEach(t => stream.addTrack(t));
 }
+
