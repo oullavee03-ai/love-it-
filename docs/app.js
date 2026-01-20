@@ -19,12 +19,6 @@ function openTab(id){
   document.getElementById(id).classList.remove("hidden");
 }
 
-/* 🌙 Theme */
-function toggleTheme() {
-  document.body.classList.toggle("light");
-}
-
-
 // Garden scenes
 const gardens = [
   {
@@ -117,34 +111,6 @@ const petImages = [
   "https://images.unsplash.com/photo-1518717758536-85ae29035b6d"
 ];
 
-// GARDEN REAL PHOTOS
-function loadGarden(){
-  const butterflies = [
-    "https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13",
-    "https://images.unsplash.com/photo-1501004318641-b39e6451bec6"
-  ];
-  const plants = [
-    "https://images.unsplash.com/photo-1446071103084-c257b5f70672",
-    "https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf"
-  ];
-
-/* 🦋 Butterflies */
-function spawnButterfly() {
-  const b = document.createElement("img");
-  b.src = "https://upload.wikimedia.org/wikipedia/commons/7/7c/Butterfly_animated.gif";
-  b.className = "floating-butterfly";
-  b.style.top = Math.random()*70+"vh";
-  document.body.appendChild(b);
-  setTimeout(()=>b.remove(),20000);
-}
-setInterval(spawnButterfly, 7000);
-  
-  plants.forEach(src=>{
-    const img=document.createElement("img");
-    img.src=src;
-    document.getElementById("plants").appendChild(img);
-  });
-}
 function effect(e){
   const el=document.createElement("div");
   el.className="effect";
