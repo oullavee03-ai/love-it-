@@ -1,0 +1,8 @@
+{
+  "name": "Love Garden",
+  "short_name": "Love 💖",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f7c8e0",
+  "theme_color": "#ff9acb"
+}
