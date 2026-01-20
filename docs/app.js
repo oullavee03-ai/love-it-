@@ -130,6 +130,36 @@ function feedPet(){ effect("🍎"); updatePet({happy:pet.happy+5}); }
 function playPet(){ effect("🎾"); updatePet({happy:pet.happy+10}); }
 function dressPet(){ updatePet({style:(pet.style+1)%4}); }
 
+// REAL PET IMAGES
+const petImages = [
+  "https://images.unsplash.com/photo-1517849845537-4d257902454a",
+  "https://images.unsplash.com/photo-1507149833265-60c372daea22",
+  "https://images.unsplash.com/photo-1518717758536-85ae29035b6d"
+];
+
+// GARDEN REAL PHOTOS
+function loadGarden(){
+  const butterflies = [
+    "https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13",
+    "https://images.unsplash.com/photo-1501004318641-b39e6451bec6"
+  ];
+  const plants = [
+    "https://images.unsplash.com/photo-1446071103084-c257b5f70672",
+    "https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf"
+  ];
+
+  butterflies.forEach(src=>{
+    const img=document.createElement("img");
+    img.src=src;
+    document.getElementById("butterflies").appendChild(img);
+  });
+
+  plants.forEach(src=>{
+    const img=document.createElement("img");
+    img.src=src;
+    document.getElementById("plants").appendChild(img);
+  });
+}
 function effect(e){
   const el=document.createElement("div");
   el.className="effect";
