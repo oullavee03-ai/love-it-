@@ -6,68 +6,56 @@
 }
 
 body {
-  font-family: "Poppins", sans-serif;
-  background: linear-gradient(135deg,#f7c8e0,#d6c9ff,#ffe5b4);
+  font-family: "Segoe UI", sans-serif;
+  background: #fff0f6;
   text-align: center;
-  margin: 0;
 }
 
 nav button {
-  background: #ff9acb;
-  border: none;
-  padding: 10px 14px;
   margin: 5px;
-  border-radius: 14px;
-  color: white;
 }
 
-.tab { padding: 20px; }
-.hidden { display: none; }
+.hidden {
+  display: none;
+}
 
 #pet-area {
-  width: 240px;
-  height: 240px;
-  margin: auto;
   position: relative;
-  animation: breathe 4s infinite;
+  width: 200px;
+  margin: auto;
 }
 
-#pet-area img {
-  position: absolute;
-  width: 100%;
-}
-
-@keyframes breathe {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-.plant {
-  position: fixed;
-  bottom: 0;
+#pet-image {
   width: 120px;
-}
-.plant.left { left: 0; }
-.plant.right { right: 0; }
-
-.butterfly {
-  position: fixed;
-  width: 40px;
-  animation: fly 15s linear infinite;
+  animation: bounce 2s infinite;
 }
 
-@keyframes fly {
-  from { transform: translateX(-50px); }
-  to { transform: translateX(110vw); }
+#pet-clothes {
+  width: 120px;
+  position: absolute;
+  top: 0;
+  left: 40px;
+}
+
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
 }
 
 .effect {
   position: absolute;
-  font-size: 30px;
+  font-size: 24px;
   animation: floatUp 1.5s forwards;
 }
 
 @keyframes floatUp {
-  to { opacity: 0; transform: translateY(-40px); }
+  from { opacity:1; transform: translateY(0); }
+  to { opacity:0; transform: translateY(-40px); }
 }
+
+video {
+  width: 250px;
+  margin-top: 10px;
+}
+
 
