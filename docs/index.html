@@ -14,32 +14,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
- 
-    <h1>🌿 Living Garden</h1>
-    <p>Real butterflies, real plants, real peace</p>
-  </header>
-
-  <main class="garden">
-    <!-- Butterflies -->
-    <section>
-      <h2>🦋 Butterflies</h2>
-      <div class="image-grid" id="butterflies"></div>
-    </section>
-
-    <!-- Garden -->
-    <section>
-      <h2>🌼 Garden</h2>
-      <div class="image-grid" id="garden"></div>
-    </section>
-
-    <!-- Plants -->
-    <section>
-      <h2>🌱 Plants</h2>
-      <div class="image-grid" id="plants"></div>
-    </section>
-  </main>
-
-<body class="theme-pink">
 
 <!-- AUTH -->
 <div id="auth">
@@ -61,8 +35,17 @@
     <button onclick="openTab('call')">📞</button>
     <button onclick="toggleTheme()">🎨</button>
     <button onclick="logout()">🚪</button>
+    <button onclick="showTab('garden')">Garden</button>
+  <button onclick="showTab('movie')">Movie Night</button>
+  <button onclick="toggleTheme()">🌙</button>
   </nav>
 
+  <!-- 🌿 GARDEN -->
+<section id="garden" class="tab">
+  <img class="scene" src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6" />
+  <p>Our shared space. Water it with care.</p>
+</section>
+  
   <!-- HOME -->
   <section id="home" class="tab">
     <h2>Your Mood 💭</h2>
@@ -77,8 +60,9 @@
 
   <!-- PET -->
   <section id="pet" class="tab hidden">
-    <img id="petImg" />
-    <div id="petStats"></div>
+  <div id="petArea">
+    <img id="petImage" src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif">
+  </div>
     <button onclick="feedPet()">🍎 Feed</button>
     <button onclick="playPet()">🎾 Play</button>
     <button onclick="changePet()">👗 Change</button>
@@ -100,7 +84,14 @@
     <button onclick="startCall()">Start Call</button>
     <button onclick="shareScreen()">Share Screen</button>
   </section>
-
+  
+<!-- 🎬 MOVIE NIGHT -->
+<section id="movie" class="tab hidden">
+  <h2>Movie Night 🎬</h2>
+  <input id="movieUrl" placeholder="Paste MP4 / Drive direct link" />
+  <button onclick="loadMovie()">Load</button>
+  <video id="sharedMovie" controls></video>
+</section>  
 </div>
 
 <script src="app.js"></script>
