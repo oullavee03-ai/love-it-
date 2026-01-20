@@ -1,61 +1,86 @@
 :root {
   --bg: linear-gradient(135deg,#f7c8e0,#d6c9ff,#ffe5b4);
-  --glass: rgba(255,255,255,0.65);
-  --pink:#ff9acb;
-  --text:#5b4b8a;
+  --glass: rgba(255,255,255,0.6);
+  --accent: #ff9acb;
+  --text: #5b4b8a;
 }
 
 body {
-  font-family: "Segoe UI", sans-serif;
-  background: #fff0f6;
-  text-align: center;
+  margin:0;
+  font-family:Poppins, sans-serif;
+  background:var(--bg);
+  text-align:center;
+  color:var(--text);
+}
+
+.logo { margin:20px 0; }
+
+.hidden { display:none; }
+
+input {
+  padding:10px;
+  border-radius:12px;
+  border:none;
+  margin:5px;
+}
+
+button {
+  padding:10px 16px;
+  border-radius:14px;
+  border:none;
+  background:var(--accent);
+  color:white;
+  margin:6px;
+  cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,0,0,.15);
 }
 
 nav button {
-  margin: 5px;
+  background:rgba(255,255,255,0.5);
+  color:var(--text);
 }
 
-.hidden {
-  display: none;
+.tab {
+  background:var(--glass);
+  margin:20px auto;
+  padding:20px;
+  border-radius:24px;
+  max-width:420px;
+  backdrop-filter:blur(12px);
 }
 
-#pet-area {
-  position: relative;
-  width: 200px;
-  margin: auto;
+/* PET */
+#petArea {
+  position:relative;
+  width:220px;
+  height:220px;
+  margin:auto;
+  animation:breathe 4s infinite;
 }
 
-#pet-image {
-  width: 120px;
-  animation: bounce 2s infinite;
+#petArea img {
+  position:absolute;
+  width:100%;
 }
 
-#pet-clothes {
-  width: 120px;
-  position: absolute;
-  top: 0;
-  left: 40px;
-}
-
-@keyframes bounce {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+@keyframes breathe {
+  0%,100% { transform:scale(1); }
+  50% { transform:scale(1.05); }
 }
 
 .effect {
-  position: absolute;
-  font-size: 24px;
-  animation: floatUp 1.5s forwards;
+  position:absolute;
+  font-size:30px;
+  animation:floatUp 1.5s forwards;
 }
 
 @keyframes floatUp {
-  from { opacity:1; transform: translateY(0); }
-  to { opacity:0; transform: translateY(-40px); }
+  from { opacity:1; transform:translateY(0); }
+  to { opacity:0; transform:translateY(-40px); }
 }
 
 video {
-  width: 250px;
-  margin-top: 10px;
+  width:45%;
+  border-radius:16px;
 }
-
 
