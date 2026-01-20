@@ -2,13 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Love Garden 💖</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Love App 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
-
-  <!-- Styles -->
   <link rel="stylesheet" href="style.css" />
 
   <!-- Firebase -->
@@ -17,17 +14,15 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 
-<body>
-
-<h1 class="logo">Love Garden 💖</h1>
+<body class="theme-pink">
 
 <!-- AUTH -->
-<div id="authBox">
+<div id="auth">
+  <h1>💖 Our Love Space</h1>
   <input id="email" placeholder="Email" />
   <input id="password" type="password" placeholder="Password" />
   <button onclick="signup()">Sign Up</button>
   <button onclick="login()">Login</button>
-  <p id="authStatus"></p>
 </div>
 
 <!-- APP -->
@@ -35,50 +30,42 @@
 
   <!-- NAV -->
   <nav>
-    <button onclick="openTab('home')">🏠 Home</button>
-    <button onclick="openTab('pet')">🐾 Pet</button>
-    <button onclick="openTab('games')">🎮 Games</button>
-    <button onclick="openTab('chat')">💬 Chat</button>
-    <button onclick="openTab('call')">📹 Call</button>
+    <button onclick="openTab('home')">🏠</button>
+    <button onclick="openTab('pet')">🐾</button>
+    <button onclick="openTab('games')">🎮</button>
+    <button onclick="openTab('call')">📞</button>
+    <button onclick="toggleTheme()">🎨</button>
     <button onclick="logout()">🚪</button>
   </nav>
 
   <!-- HOME -->
   <section id="home" class="tab">
-    <h2>Daily Love Nudge 💌</h2>
-    <input id="moodInput" placeholder="How are you feeling today?" />
-    <button onclick="saveMood()">Save Mood</button>
+    <h2>Your Mood 💭</h2>
+    <input id="moodInput" placeholder="How are you feeling?" />
+    <button onclick="saveMood()">Save</button>
     <p id="moodDisplay"></p>
+
+    <div class="nudge">
+      💌 Love Nudge: Send one sweet message today.
+    </div>
   </section>
 
   <!-- PET -->
   <section id="pet" class="tab hidden">
-    <h2>Meet Luvie 🐾</h2>
-
-    <div id="petArea">
-      <img id="petImage" />
-      <img id="petClothes" />
-      <div id="effectLayer"></div>
-    </div>
-
-    <p id="petStatus"></p>
-
+    <img id="petImg" />
+    <div id="petStats"></div>
     <button onclick="feedPet()">🍎 Feed</button>
     <button onclick="playPet()">🎾 Play</button>
-    <button onclick="dressPet()">👗 Dress</button>
+    <button onclick="changePet()">👗 Change</button>
+    <img class="plant" src="assets/ui/plant.png" />
+    <img class="butterfly" src="assets/ui/butterfly.gif" />
   </section>
 
   <!-- GAMES -->
   <section id="games" class="tab hidden">
-    <h2>Tic Tac Toe 💕</h2>
-    <p>Multiplayer coming next update ✨</p>
-  </section>
-
-  <!-- CHAT -->
-  <section id="chat" class="tab hidden">
-    <div id="chatBox"></div>
-    <input id="chatInput" placeholder="Say something sweet..." />
-    <button onclick="sendMessage()">Send</button>
+    <h2>Tic Tac Toe</h2>
+    <div id="board"></div>
+    <p id="gameStatus"></p>
   </section>
 
   <!-- CALL -->
@@ -94,3 +81,4 @@
 <script src="app.js"></script>
 </body>
 </html>
+
