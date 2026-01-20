@@ -17,43 +17,7 @@ let pet = null;
 function openTab(id){
   document.querySelectorAll(".tab").forEach(t=>t.classList.add("hidden"));
   document.getElementById(id).classList.remove("hidden");
-}
-
-// Garden scenes
-const gardens = [
-  {
-    src: "https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf",
-    caption: "Sunlit garden path"
-  },
-  {
-    src: "https://images.unsplash.com/photo-1468327768560-75b778cbb551",
-    caption: "Blooming flower garden"
-  }
-
-function renderImages() {
-  const container = document.getElementById("imageContainer");
-  if (!container) return;
-
-  const images = [
-    "https://images.unsplash.com/photo-1501004318641-b39e6451bec6",
-    "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
-    "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
-  ];
-
-  images.forEach(src => {
-    const img = document.createElement("img");
-    img.src = src;
-    img.style.width = "90%";
-    img.style.borderRadius = "16px";
-    img.style.margin = "10px 0";
-    container.appendChild(img);
-  });
-}
-
-// Load all sections
-renderImages("butterflies", butterflies);
-renderImages("garden", gardens);
-renderImages("plants", plants);
+};
 
 // AUTH
 function signup(){
