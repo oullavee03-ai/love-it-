@@ -16,104 +16,89 @@ const db = firebase.database();
 let userId = null;
 let petData = null;
 
-// UI
+
+// Tabs
 function openTab(id){
-  document.querySelectorAll(".page").forEach(p=>p.style.display="none");
-  document.getElementById(id).style.display="block";
+  document.querySelectorAll(".tab").forEach(t=>t.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
 }
 
-function setUI(on){
-  auth.style.display = on?"none":"block";
-  app.style.display = on?"block":"none";
-}
-
-// AUTH
+// Auth
 function signup(){
-  auth.createUserWithEmailAndPassword(email.value,password.value)
-    .then(()=>alert("Account created!"))
-    .catch(e=>alert(e.message));
+  auth.createUserWithEmailAndPassword(email.value,password.value);
 }
-
 function login(){
-  auth.signInWithEmailAndPassword(email.value,password.value)
-    .catch(e=>alert(e.message));
+  auth.signInWithEmailAndPassword(email.value,password.value);
 }
-
-function logout(){
-  auth.signOut();
-}
+function logout(){ auth.signOut(); }
 
 auth.onAuthStateChanged(u=>{
-  if(!u){ auth.style.display="block"; return; }
-  userId=u.uid;
+  if(!u) return;
+  uid=u.uid;
   auth.style.display="none";
   app.style.display="block";
-  loadPet(); loadMood(); loadCalendar(); loadChat();
+  loadPet(); loadMood(); loadChat(); loadGame();
 });
 
-// MOOD
+// Mood
 function saveMood(){
-  db.ref(`users/${userId}/mood`).set({text:mood.value,time:Date.now()});
-  moodMessage.innerText="Mood saved 💖";
+  db.ref(`users/${uid}/mood`).set(moodInput.value);
+}
+function loadMood(){
+  db.ref(`users/${uid}/mood`).on("value",s=>{
+    moodDisplay.innerText = "Mood: " + (s.val()||"—");
+  });
 }
 
-// PET
+// Pet
 function loadPet(){
-  const ref=db.ref(`users/${userId}/pet`);
+  const ref=db.ref(`users/${uid}/pet`);
   ref.once("value",s=>{
-    if(!s.exists()) ref.set({style:0,hunger:60,happy:60});
+    if(!s.exists()) ref.set({style:0,happy:50});
   });
   ref.on("value",s=>{
-    petData=s.val();
-    petStatus.innerText=`🍎 ${petData.hunger} | ❤️ ${petData.happy}`;
-    petImage.src=`./images/pet/pet${petData.style}.png`;
-    petClothes.src=`./images/clothes/cloth${petData.style}.png`;
+    pet=s.val();
+    petImage.src=`assets/pet/pet${pet.style}.png`;
+    petClothes.src=`assets/clothes/cloth${pet.style}.png`;
+    petStats.innerText=`❤️ ${pet.happy}`;
   });
 }
-
-function updatePet(d){ db.ref(`users/${userId}/pet`).update(d); }
-function feedPet(){ updatePet({hunger:100,happy:petData.happy+5}); effect("🍎"); }
-function playPet(){ updatePet({happy:100,hunger:petData.hunger-10}); effect("🎾"); }
-function dressPet(){ updatePet({style:(petData.style+1)%4}); }
-
+function feedPet(){ updatePet({happy: pet.happy+5}); effect("🍎"); }
+function playPet(){ updatePet({happy: pet.happy+10}); effect("🎾"); }
+function dressPet(){ updatePet({style:(pet.style+1)%4}); }
+function updatePet(d){ db.ref(`users/${uid}/pet`).update(d); }
 function effect(e){
-  const d=document.createElement("div");
-  d.className="effect"; d.innerText=e;
-  effect-layer.appendChild(d);
-  setTimeout(()=>d.remove(),1500);
+  const el=document.createElement("div");
+  el.className="effect"; el.innerText=e;
+  effects.appendChild(el);
+  setTimeout(()=>el.remove(),1500);
 }
 
-// CALENDAR
-function addEvent(){
-  db.ref(`users/${userId}/events`).push({
-    name:event-name.value,
-    date:event-date.value
-  });
+// Multiplayer Game
+function tapPet(){
+  db.ref("game/taps").transaction(v=>(v||0)+1);
 }
-function loadCalendar(){
-  db.ref(`users/${userId}/events`).on("value",s=>{
-    calendar.innerHTML="";
-    Object.values(s.val()||{}).forEach(e=>{
-      calendar.innerHTML+=`<p>${e.date} – ${e.name}</p>`;
-    });
+function loadGame(){
+  db.ref("game/taps").on("value",s=>{
+    tapScore.innerText="Total taps: "+(s.val()||0);
   });
 }
 
-// CHAT
+// Chat
 function sendMessage(){
-  db.ref("chat").push({m:message.value});
-  message.value="";
+  db.ref("chat").push(chatInput.value);
+  chatInput.value="";
 }
 function loadChat(){
   db.ref("chat").on("value",s=>{
-    chat.innerHTML="";
-    Object.values(s.val()||{}).forEach(c=>{
-      chat.innerHTML+=`<p>${c.m}</p>`;
+    chatBox.innerHTML="";
+    Object.values(s.val()||{}).forEach(m=>{
+      chatBox.innerHTML+=`<p>${m}</p>`;
     });
   });
 }
 
-// VIDEO
+// Video Call (basic local)
 let stream;
 async function startCall(){
   stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
