@@ -18,6 +18,69 @@ function openTab(id){
   document.querySelectorAll(".tab").forEach(t=>t.classList.add("hidden"));
   document.getElementById(id).classList.remove("hidden");
 }
+// Real photographic images from Unsplash (royalty-free)
+
+// Butterflies
+const butterflies = [
+  {
+    src: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6",
+    caption: "Butterfly on wild flower"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13",
+    caption: "Blue butterfly resting"
+  }
+];
+
+// Garden scenes
+const gardens = [
+  {
+    src: "https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf",
+    caption: "Sunlit garden path"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1468327768560-75b778cbb551",
+    caption: "Blooming flower garden"
+  }
+];
+
+// Plants
+const plants = [
+  {
+    src: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6",
+    caption: "Green leaves close-up"
+  },
+  {
+    src: "https://images.unsplash.com/photo-1446071103084-c257b5f70672",
+    caption: "Indoor house plant"
+  }
+];
+
+// Utility function to render images
+function renderImages(containerId, images) {
+  const container = document.getElementById(containerId);
+
+  images.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "image-card";
+
+    const img = document.createElement("img");
+    img.src = item.src;
+    img.alt = item.caption;
+
+    const caption = document.createElement("p");
+    caption.textContent = item.caption;
+
+    card.appendChild(img);
+    card.appendChild(caption);
+    container.appendChild(card);
+  });
+}
+
+// Load all sections
+renderImages("butterflies", butterflies);
+renderImages("garden", gardens);
+renderImages("plants", plants);
 
 // AUTH
 function signup(){
