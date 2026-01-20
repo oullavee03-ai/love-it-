@@ -2,17 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Our Cozy Love App 💖</title>
+  <title>Our Love App 💖</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-<h1>💖 Our Cozy Space</h1>
+<h1>Our Love App 💖</h1>
 
 <!-- AUTH -->
 <div id="auth">
-  <input id="email" placeholder="Email" />
+  <input id="email" type="email" placeholder="Email" />
   <input id="password" type="password" placeholder="Password" />
   <button onclick="signup()">Sign Up</button>
   <button onclick="login()">Login</button>
@@ -20,74 +21,61 @@
 </div>
 
 <!-- APP -->
-<div id="app" style="display:none">
+<div id="app" style="display:none;">
 
   <!-- NAV -->
   <nav>
     <button onclick="openTab('home')">🏠 Home</button>
     <button onclick="openTab('pet')">🐾 Pet</button>
-    <button onclick="openTab('games')">🎮 Games</button>
     <button onclick="openTab('chat')">💬 Chat</button>
     <button onclick="openTab('call')">📹 Call</button>
+    <button onclick="logout()">Logout</button>
   </nav>
 
   <!-- HOME -->
-  <section id="home" class="tab">
+  <div id="home" class="tab">
     <h2>🌈 Mood</h2>
-    <input id="moodInput" placeholder="How do you feel today?" />
+    <input id="mood" placeholder="How are you feeling?" />
     <button onclick="saveMood()">Save Mood</button>
-    <p id="moodDisplay"></p>
-  </section>
+    <p id="mood-message"></p>
+  </div>
 
   <!-- PET -->
-  <section id="pet" class="tab hidden">
+  <div id="pet" class="tab hidden">
     <h2>🐾 Luvie</h2>
 
-    <div id="garden">
-      <img src="assets/decor/plant.png" class="plant left">
-      <img src="assets/decor/plant.png" class="plant right">
-      <img src="assets/decor/butterfly.png" class="butterfly">
-    </div>
-
     <div id="pet-area">
-      <img id="petImage">
-      <img id="petClothes">
-      <div id="effects"></div>
+      <img id="pet-image" src="./images/pet/pet0.png" />
+      <img id="pet-clothes" src="./images/clothes/cloth0.png" />
+      <div id="effect-layer"></div>
     </div>
 
-    <p id="petStats"></p>
+    <p id="pet-status"></p>
 
     <button onclick="feedPet()">🍎 Feed</button>
     <button onclick="playPet()">🎾 Play</button>
     <button onclick="dressPet()">👗 Dress</button>
-  </section>
-
-  <!-- GAMES -->
-  <section id="games" class="tab hidden">
-    <h2>🎮 Pet Tap Game</h2>
-    <button onclick="tapPet()">Tap the Pet!</button>
-    <p id="tapScore"></p>
-  </section>
+  </div>
 
   <!-- CHAT -->
-  <section id="chat" class="tab hidden">
-    <input id="chatInput" placeholder="Say something sweet..." />
+  <div id="chat" class="tab hidden">
+    <h2>💬 Chat</h2>
+    <input id="message" placeholder="Type message..." />
     <button onclick="sendMessage()">Send</button>
-    <div id="chatBox"></div>
-  </section>
+    <div id="chat-box"></div>
+  </div>
 
   <!-- CALL -->
-  <section id="call" class="tab hidden">
-    <button onclick="startCall()">Start Call</button>
+  <div id="call" class="tab hidden">
+    <h2>📹 Video Call</h2>
+    <button onclick="startCall()">Start Camera</button>
     <button onclick="shareScreen()">Share Screen</button>
     <video id="localVideo" autoplay muted></video>
-    <video id="remoteVideo" autoplay></video>
-  </section>
+  </div>
 
-  <button onclick="logout()">Logout</button>
 </div>
 
-<!-- Firebase -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -95,3 +83,5 @@
 <script src="app.js"></script>
 </body>
 </html>
+
+
