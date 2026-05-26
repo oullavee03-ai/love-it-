@@ -61,7 +61,7 @@ button {
 
 #petArea img {
   width: 160px;
-  animation: breathe 3s infinite;
+  animation: breathe 10s infinite;
 }
 
 @keyframes breathe {
